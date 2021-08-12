@@ -49,7 +49,7 @@ function App() {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch();
-  }, [random]);
+  }, []);
 
   // Retrieves the data of the status of the API
   async function reFetch() {
@@ -62,8 +62,10 @@ function App() {
 
   // Repsponsible for rerendering
   const reRender = (e) => {
+    const trigger = true
     reFetch();
     setRandom(Math.random());
+    return trigger;
   };
 
   return (
@@ -138,7 +140,7 @@ function App() {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {live ? <OverviewPage currency={currency}/> : <Typography variant="subtitle1">The API is currently offline :( Try again later!</Typography>}
+        {live ? <OverviewPage currency={currency} refresh={random}/> : <Typography variant="subtitle1">The API is currently offline :( Try again later!</Typography>}
       </main>
     </div>
   );

@@ -6,18 +6,22 @@ import { Card, CardContent, CardMedia, Typography, Grid } from "@material-ui/cor
 This components returns a grid of cards with different cryptocoins. 
 The value of each coin is displayed and can be set to different currencies.
 */
-const OverviewPage = (currency) => {
+const OverviewPage = (props) => {
   // Retrieve the currency from the currency json
-  currency = JSONPath({ path: "$.*", json: currency })[0];
+  const currency = props.currency;
 
   // useState for the logo and the value of the coins
   const [coin_logo, setLogo] = useState([{}]);
   const [coin_value, setValue] = useState([{}]);
+  const [random, setRandom] = useState(Math.random());
 
     // Repsponsible for rendering
     useEffect(() => {
-      reFetch();
-    }, []);
+      if (random !== props.refresh){
+        setRandom(props.refresh)
+        reFetch();
+      }
+    }, [props.refresh, random]);
   
     // Retrieves the data of the status of the API
     async function reFetch() {
