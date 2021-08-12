@@ -2,6 +2,8 @@
 
 Tool to visualize and investigate crypto currencies.
 
+<img width="1792" alt="cryptotool" src="https://user-images.githubusercontent.com/17745256/129229525-f8ed30da-f8b7-44d7-8ba5-54ae8f97b78a.png">
+
 **Backend: Python/Flask REST API**
 
 1. `cd backend`
