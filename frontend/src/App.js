@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Drawer, makeStyles, Button, Typography, Grid, AppBar, Toolbar, 
   FormControl, Chip, MenuItem, InputLabel, Select } from "@material-ui/core";
 import OverviewPage from "./components/overview";
+import { AppContext } from './context/AppContext';
 
 const drawerWidth = 200;
 
@@ -42,6 +43,7 @@ function App() {
   const [currency, setCurrency] = useState(currencies[0]);
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
+  const { coinList, setCoinManagerOpen, coinManagerOpen } = useContext(AppContext)
 
   // represents if the API is online or not
   const live = (status.gecko_says === '(V3) To the Moon!'? true : false)
@@ -68,6 +70,20 @@ function App() {
     return trigger;
   };
 
+  // Explenation of selecting coins when the coinsList is empty
+  const explainCoinSelection = () => {
+    return (
+      <>
+      <Typography variant="h3" gutterBottom>
+        Welkom to CryptoTool!
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        <p>Start by selecting some cryptocoins in the sidebar.</p>
+      </Typography>
+      </>
+    );
+  }
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed" className={classes.appBar}>
@@ -87,6 +103,36 @@ function App() {
         }}
       >
         <div className={classes.toolbar} />
+        <div style={{ padding: 20 }}>
+          <Grid
+            container
+            direction="row"
+            justifyContent="center"
+            alignItems="flex-end"
+          >
+            <div>
+              <Typography variant="subtitle1">Settings:</Typography>
+              <Button
+                onClick={() => setCoinManagerOpen(true)}
+                variant="contained"
+              >
+                Select coins
+              </Button>
+            </div>
+          </Grid>
+        </div>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-end"
+        >
+          <div>
+            <Button onClick={reRender} variant="contained">
+              Refresh data
+            </Button>
+          </div>
+        </Grid>
         <Grid
           container
           direction="row"
@@ -117,30 +163,30 @@ function App() {
           alignItems="flex-end"
         >
           <div>
-            <Button onClick={reRender} variant="contained">
-              Refresh data
-            </Button>
-          </div>
-        </Grid>
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="flex-end"
-        >
-          <div style={{ padding: 20 }}>
-            <div>
-              <Typography variant="subtitle1">
-                Status GeckoAPI:
-              </Typography>
-              {live? <Chip variant="outlined" color="primary" size="small" label='Live'/> : <Chip variant="outlined" color="secondary" size="small" label='Offline'/>}
-            </div>
+            <Typography variant="subtitle1">Status GeckoAPI:</Typography>
+            {live ? (
+              <Chip
+                variant="outlined"
+                color="primary"
+                size="small"
+                label="Live"
+              />
+            ) : (
+              <Chip
+                variant="outlined"
+                color="secondary"
+                size="small"
+                label="Offline"
+              />
+            )}
           </div>
         </Grid>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {live ? <OverviewPage currency={currency} refresh={random}/> : <Typography variant="subtitle1">The API is currently offline :( Try again later!</Typography>}
+        {/* Display not Live, no coins selected or the overview, depending on the state of the tool */}
+        {live ? ((coinList.length > 0 || coinManagerOpen)? <OverviewPage currency={currency} refresh={random}/> : explainCoinSelection())
+        : <Typography variant="subtitle1">The API is currently offline :( Try again later!</Typography>}
       </main>
     </div>
   );

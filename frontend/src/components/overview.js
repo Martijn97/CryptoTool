@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { JSONPath } from "jsonpath-plus";
 import { Card, CardContent, CardMedia, Typography, Grid } from "@material-ui/core";
+import CoinSelector from './coinSelect.js'
+import { AppContext } from '../context/AppContext';
+import axios from "axios";
 
 /*
 This components returns a grid of cards with different cryptocoins. 
@@ -15,27 +18,36 @@ const OverviewPage = (props) => {
   const [coin_value, setValue] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
 
-    // Repsponsible for rendering
-    useEffect(() => {
-      if (random !== props.refresh){
-        setRandom(props.refresh)
-        reFetch();
-      }
-    }, [props.refresh, random]);
-  
-    // Retrieves the data of the status of the API
-    async function reFetch() {
-        fetch("/current_value")
-        .then((res) => res.json())
-        .then((data) => {
-          setValue(data);
-        });
-      fetch("/coin_logo")
-        .then((res) => res.json())
-        .then((data) => {
-          setLogo(data);
-        });
-    }
+  // Global states from the context
+  const { coinManagerOpen, setCoinManagerOpen, 
+    coinList, setCoinList } = useContext(AppContext);
+
+  // Repsponsible for rendering
+  useEffect(() => {
+      reFetch(coinList);
+  }, [props.refresh, random, coinList, setCoinList]);
+
+  // Retrieves the data of the overview page
+  async function reFetch(coinList) {
+      axios.get("/coin_logo_list", {
+        params: {
+          coins: coinList,
+        },
+        type: "GET",
+      })
+      .then((data) => {
+        setLogo(data)
+      });
+      axios.get("/current_value_list", {
+        params: {
+          coins: coinList,
+        },
+        type: "GET",
+      })
+      .then((data) => {
+        setValue(data.data)
+      });
+  }
 
   const currencyTable = (coin_value, coin_logo) => {
     // Return the name of the cryptocurrencies
@@ -114,7 +126,15 @@ const OverviewPage = (props) => {
     return createTable(crypto_coins);
   };
 
-  return <>{currencyTable(coin_value, coin_logo)}</>;
+  return (
+    <>
+      {currencyTable(coin_value, coin_logo)}
+      <CoinSelector
+        coinManagerOpen={coinManagerOpen}
+        onCloseCoinManager={() => setCoinManagerOpen(false)}
+      />
+    </>
+  );
 };
 
 export default OverviewPage;
