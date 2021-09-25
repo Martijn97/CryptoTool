@@ -42,6 +42,7 @@ function App() {
 
   // useState for the currency, status and rerendering
   const [currency, setCurrency] = useState(currencies[0]);
+  const [days, setDays] = useState(7);
   const [analysisStarted, setAnalysisStarted] = useState(false)
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
@@ -164,6 +165,33 @@ function App() {
           justifyContent="center"
           alignItems="flex-end"
         >
+          <div style={{ marginTop: 20 }}>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="days-selectlabel">Days</InputLabel>
+              <Select
+                labelId="days-select-label"
+                id="days-select"
+                value={days}
+                onChange={(e) => setDays(e.target.value)}
+                label="Days"
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={7}>7</MenuItem>
+                <MenuItem value={14}>14</MenuItem>
+                <MenuItem value={30}>30</MenuItem>
+                <MenuItem value={90}>90</MenuItem>
+                <MenuItem value={365}>180</MenuItem>
+                <MenuItem value={'max'}>Max</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-end"
+        >
           <div style={{ padding: 20 }}>
             <Button
               variant="contained"
@@ -220,7 +248,7 @@ function App() {
         </div>
         
         <div style={{marginTop:"75px"}}>
-          {analysisStarted && <GeneralAnalysisPage currency={currency}/>}
+          {analysisStarted && <GeneralAnalysisPage currency={currency} days={days}/>}
         </div>
       </main>
     </div>

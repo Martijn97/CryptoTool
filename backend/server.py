@@ -26,6 +26,7 @@ def coin_value_list():
 @app.route("/OHLC_data")
 def ohlc_data():
     coins = request.args.getlist('coins[]')
+    days = request.args.get('days')
     currencies=['usd', 'eur','gbp']
 
     all_ohlc_data = {}
@@ -33,7 +34,7 @@ def ohlc_data():
 
     for coin in coins:
         for currency in currencies:
-            ohlc_data_coin = {currency: crypto_data.get_coin_ohlc_by_id(id=coin, vs_currency=currency, days=7)}
+            ohlc_data_coin = {currency: crypto_data.get_coin_ohlc_by_id(id=coin, vs_currency=currency, days=days)}
             ohlc_data_coin_currencies.update(ohlc_data_coin)
             
         ohlc_data_coins_currency = {coin: ohlc_data_coin_currencies}

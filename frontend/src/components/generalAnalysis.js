@@ -13,13 +13,14 @@ const GeneralAnalysisPage = (props) => {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch(coinList);
-  }, [coinList]);
+  }, [coinList, props.days]);
 
   async function reFetch(coinList) {
     axios
       .get("/OHLC_data", {
         params: {
           coins: coinList,
+          days: props.days,
         },
         type: "GET",
       })
@@ -27,8 +28,6 @@ const GeneralAnalysisPage = (props) => {
         setOHLC(data.data);
       });
   }
-
-  console.log('data', ohlc)
 
   function current_currency() {
     if (props.currency === 'Euro') {
