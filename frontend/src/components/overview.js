@@ -51,6 +51,11 @@ const OverviewPage = (props) => {
       });
   }
 
+  // Function that makes the string start with a capital letter
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
   const currencyTable = (coin_value, coin_logo) => {
     // Return the name of the cryptocurrencies
     const result_name = JSONPath({ path: "$.*~", json: coin_value });
@@ -80,7 +85,7 @@ const OverviewPage = (props) => {
                 <CardContent>
                   <Typography color="textSecondary">Coin</Typography>
                   <Typography variant="h4" component="h2">
-                    {result_name[i]}
+                    {capitalizeFirstLetter(result_name[i])}
                   </Typography>
                   <Typography color="textSecondary">value:</Typography>
                   <Typography variant="h6" component="h2">
