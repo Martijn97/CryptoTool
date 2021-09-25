@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { JSONPath } from "jsonpath-plus";
-import { Card, CardContent, CardMedia, Typography, Grid } from "@material-ui/core";
+import { Card, CardContent, CardMedia, Typography, Grid, Button } from "@material-ui/core";
 import CoinSelector from './coinSelect.js'
 import { AppContext } from '../context/AppContext';
 import axios from "axios";
@@ -19,33 +19,35 @@ const OverviewPage = (props) => {
   const [random, setRandom] = useState(Math.random());
 
   // Global states from the context
-  const { coinManagerOpen, setCoinManagerOpen, 
-    coinList, setCoinList } = useContext(AppContext);
+  const { coinManagerOpen, setCoinManagerOpen, coinList, setCoinList } =
+    useContext(AppContext);
 
   // Repsponsible for rendering
   useEffect(() => {
-      reFetch(coinList);
+    reFetch(coinList);
   }, [props.refresh, random, coinList, setCoinList]);
 
   // Retrieves the data of the overview page
   async function reFetch(coinList) {
-      axios.get("/coin_logo_list", {
+    axios
+      .get("/coin_logo_list", {
         params: {
           coins: coinList,
         },
         type: "GET",
       })
       .then((data) => {
-        setLogo(data)
+        setLogo(data);
       });
-      axios.get("/current_value_list", {
+    axios
+      .get("/current_value_list", {
         params: {
           coins: coinList,
         },
         type: "GET",
       })
       .then((data) => {
-        setValue(data.data)
+        setValue(data.data);
       });
   }
 
@@ -66,7 +68,7 @@ const OverviewPage = (props) => {
 
       // Returns a single card for a crypto coin with its information.
       return (
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Card variant="outlined">
             <Grid
               container
@@ -88,6 +90,9 @@ const OverviewPage = (props) => {
                       ? "$ " + result[1]
                       : "£ " + result[2]}
                   </Typography>
+                  <Button variant="contained" style={{ marginTop: "10px" }}>
+                    More info
+                  </Button>
                 </CardContent>
               </Grid>
               <Grid item xs={3} justifyContent="center" alignItems="center">

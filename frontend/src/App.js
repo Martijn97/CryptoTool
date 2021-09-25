@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Drawer, makeStyles, Button, Typography, Grid, AppBar, Toolbar, 
-  FormControl, Chip, MenuItem, InputLabel, Select } from "@material-ui/core";
+  FormControl, Chip, MenuItem, InputLabel, Select} from "@material-ui/core";
 import OverviewPage from "./components/overview";
+import GeneralAnalysisPage from "./components/generalAnalysis"
 import { AppContext } from './context/AppContext';
 
 const drawerWidth = 200;
@@ -41,6 +42,7 @@ function App() {
 
   // useState for the currency, status and rerendering
   const [currency, setCurrency] = useState(currencies[0]);
+  const [analysisStarted, setAnalysisStarted] = useState(false)
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
   const { coinList, setCoinManagerOpen, coinManagerOpen } = useContext(AppContext)
@@ -139,7 +141,7 @@ function App() {
           justifyContent="center"
           alignItems="flex-end"
         >
-          <div style={{ padding: 20 }}>
+          <div style={{ marginTop: 20 }}>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel id="currency-selectlabel">Currency</InputLabel>
               <Select
@@ -154,6 +156,23 @@ function App() {
                 <MenuItem value={currencies[2]}>{currencies[2]}</MenuItem>
               </Select>
             </FormControl>
+          </div>
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-end"
+        >
+          <div style={{ padding: 20 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginTop: "10px" }}
+              onClick={() => setAnalysisStarted(true)}
+            >
+              Start analysis
+            </Button>
           </div>
         </Grid>
         <Grid
@@ -185,8 +204,24 @@ function App() {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {/* Display not Live, no coins selected or the overview, depending on the state of the tool */}
-        {live ? ((coinList.length > 0 || coinManagerOpen)? <OverviewPage currency={currency} refresh={random}/> : explainCoinSelection())
-        : <Typography variant="subtitle1">The API is currently offline :( Try again later!</Typography>}
+
+        <div>
+          {live ? (
+            coinList.length > 0 || coinManagerOpen ? (
+              <OverviewPage currency={currency} refresh={random} />
+            ) : (
+              explainCoinSelection()
+            )
+          ) : (
+            <Typography variant="subtitle1">
+              The API is currently offline :( Try again later!
+            </Typography>
+          )}
+        </div>
+        
+        <div style={{marginTop:"75px"}}>
+          {analysisStarted && <GeneralAnalysisPage currency={currency}/>}
+        </div>
       </main>
     </div>
   );

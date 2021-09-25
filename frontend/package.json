@@ -10,12 +10,17 @@
     "@testing-library/user-event": "^12.1.10",
     "JSONPath": "^0.11.2",
     "axios": "^0.21.1",
+    "canvasjs": "^1.8.2",
+    "canvasjs-react-charts": "^1.0.5",
+    "d3-scale": "^4.0.2",
     "jsonpath-plus": "^6.0.1",
     "mergejson": "^1.1.2",
+    "moment": "^2.29.1",
     "qs": "^6.10.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "react-stockcharts": "^0.7.8",
     "web-vitals": "^1.0.1"
   },
   "scripts": {
