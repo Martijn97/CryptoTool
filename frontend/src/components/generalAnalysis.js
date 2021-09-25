@@ -84,7 +84,7 @@ const GeneralAnalysisPage = (props) => {
             text: "",
           },
           axisX: {
-            valueFormatString: "DD-MM-YY",
+            valueFormatString: "DD-MM-YYYY",
           },
           axisY: {
             includeZero: false,

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { JSONPath } from "jsonpath-plus";
 import { Card, CardContent, CardMedia, Typography, Grid, Button } from "@material-ui/core";
 import CoinSelector from './coinSelect.js'
+import CoinInfoModal from "./coinInfo.js";
 import { AppContext } from '../context/AppContext';
 import axios from "axios";
 
@@ -14,13 +15,14 @@ const OverviewPage = (props) => {
   const currency = props.currency;
 
   // useState for the logo and the value of the coins
-  const [coin_logo, setLogo] = useState([{}]);
+  const [coin_info, setInfo] = useState([{}]);
   const [coin_value, setValue] = useState([{}]);
+  const [coinClicked, setCoinClicked] = useState();
   const [random, setRandom] = useState(Math.random());
 
   // Global states from the context
-  const { coinManagerOpen, setCoinManagerOpen, coinList, setCoinList } =
-    useContext(AppContext);
+  const { coinManagerOpen, setCoinManagerOpen, infoModalOpen, 
+    setInfoModalOpen, coinList, setCoinList } = useContext(AppContext);
 
   // Repsponsible for rendering
   useEffect(() => {
@@ -30,14 +32,14 @@ const OverviewPage = (props) => {
   // Retrieves the data of the overview page
   async function reFetch(coinList) {
     axios
-      .get("/coin_logo_list", {
+      .get("/coin_info_list", {
         params: {
           coins: coinList,
         },
         type: "GET",
       })
       .then((data) => {
-        setLogo(data);
+        setInfo(data);
       });
     axios
       .get("/current_value_list", {
@@ -51,12 +53,13 @@ const OverviewPage = (props) => {
       });
   }
 
-  // Function that makes the string start with a capital letter
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+  // Slice the description data from the data returned from the API
+  const description_coin = JSONPath({
+    path: "$.[" + coinClicked + "].[description].*",
+    json: coin_info,
+  });
 
-  const currencyTable = (coin_value, coin_logo) => {
+  const currencyTable = (coin_value, coin_info) => {
     // Return the name of the cryptocurrencies
     const result_name = JSONPath({ path: "$.*~", json: coin_value });
 
@@ -67,8 +70,8 @@ const OverviewPage = (props) => {
         json: coin_value,
       });
       const logo = JSONPath({
-        path: "$.[" + result_name[i] + "].*",
-        json: coin_logo,
+        path: "$.[" + result_name[i] + "].[image].*",
+        json: coin_info,
       });
 
       // Returns a single card for a crypto coin with its information.
@@ -85,7 +88,7 @@ const OverviewPage = (props) => {
                 <CardContent>
                   <Typography color="textSecondary">Coin</Typography>
                   <Typography variant="h4" component="h2">
-                    {capitalizeFirstLetter(result_name[i])}
+                    {result_name[i]}
                   </Typography>
                   <Typography color="textSecondary">value:</Typography>
                   <Typography variant="h6" component="h2">
@@ -95,7 +98,11 @@ const OverviewPage = (props) => {
                       ? "$ " + result[1]
                       : "£ " + result[2]}
                   </Typography>
-                  <Button variant="contained" style={{ marginTop: "10px" }}>
+                  <Button 
+                    variant="contained" 
+                    style={{ marginTop: "10px" }}
+                    onClick = {() => {setInfoModalOpen(true); setCoinClicked(result_name[i])}}
+                    >
                     More info
                   </Button>
                 </CardContent>
@@ -135,13 +142,18 @@ const OverviewPage = (props) => {
 
     return createTable(crypto_coins);
   };
-
+  
   return (
     <>
-      {currencyTable(coin_value, coin_logo)}
+      {currencyTable(coin_value, coin_info)}
       <CoinSelector
         coinManagerOpen={coinManagerOpen}
         onCloseCoinManager={() => setCoinManagerOpen(false)}
+      />
+      <CoinInfoModal 
+        infoModalOpen={infoModalOpen}
+        onCloseInfoModel={() => setInfoModalOpen(false)}
+        data={description_coin}
       />
     </>
   );

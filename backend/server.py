@@ -44,8 +44,8 @@ def ohlc_data():
     return all_ohlc_data
 
 
-# Retrieves the logo's of the coins in coinsList
-@app.route("/coin_logo_list")
+# Retrieves the information of the coins in coinsList
+@app.route("/coin_info_list")
 def coin_logo_list():
     coins = request.args.getlist('coins[]')
 
@@ -54,7 +54,8 @@ def coin_logo_list():
         
         # for each coin in the coins array, query the logo's
         for coin in coins:
-            data_coin = {coin: crypto_data.get_coin_by_id(id=coin)['image']}
+            data_coin = {coin: {"image": crypto_data.get_coin_by_id(id=coin)['image'], 
+            "description": crypto_data.get_coin_by_id(id=coin)['description']}}
             data_logo.update(data_coin)
 
         return data_logo
