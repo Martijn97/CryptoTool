@@ -129,10 +129,9 @@ const OverviewPage = (props) => {
       const row = keys.map((numb) => {
         return (
           <Grid container spacing={3}>
-            {crypto_coins[numb * 4 + 0]}
-            {crypto_coins[numb * 4 + 1]}
-            {crypto_coins[numb * 4 + 2]}
-            {crypto_coins[numb * 4 + 3]}
+            {crypto_coins[numb * 3 + 0]}
+            {crypto_coins[numb * 3 + 1]}
+            {crypto_coins[numb * 3 + 2]}
           </Grid>
         );
       });

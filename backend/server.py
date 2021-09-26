@@ -60,6 +60,13 @@ def coin_logo_list():
 
         return data_logo
 
+# Retrieves the top-100 coins with highest market cap. Used for the coin selection treemap
+@app.route('/coin_selection_data')
+def get_coin_selection_data():
+    data_coin_selection = crypto_data.get_coins_markets(vs_currency='eur')
+
+    return jsonify(data_coin_selection)
+
 # Retrieves the status of the CoinGeckoAPI
 @app.route("/status")
 def status_API():
