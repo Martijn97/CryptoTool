@@ -59,6 +59,16 @@ const OverviewPage = (props) => {
     json: coin_info,
   });
 
+  // Function to remove a coin from coinList 
+  // when the remove button is used
+  function onRemoveCoin(coin_name) {
+    const index = coinList.indexOf(coin_name);
+
+    coinList.splice(index, 1);
+    setCoinList(coinList);
+    setRandom(Math.random());
+  };
+
   const currencyTable = (coin_value, coin_info) => {
     // Return the name of the cryptocurrencies
     const result_name = JSONPath({ path: "$.*~", json: coin_value });
@@ -104,6 +114,13 @@ const OverviewPage = (props) => {
                     onClick = {() => {setInfoModalOpen(true); setCoinClicked(result_name[i])}}
                     >
                     More info
+                  </Button>
+                  <Button 
+                    variant="outlined"
+                    style={{ marginTop: "10px" }}
+                    onClick = {() => {onRemoveCoin(result_name[i])}}
+                    >
+                    Remove coin
                   </Button>
                 </CardContent>
               </Grid>
