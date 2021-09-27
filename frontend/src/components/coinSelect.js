@@ -70,6 +70,7 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
                 config.w.config.series[0].data[config.dataPointIndex].x,
               ];
             });
+            onCloseCoinManager();
           },
         },
       },

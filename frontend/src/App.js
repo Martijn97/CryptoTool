@@ -116,7 +116,10 @@ function App() {
             <div>
               <Typography variant="subtitle1">Settings:</Typography>
               <Button
-                onClick={() => setCoinManagerOpen(true)}
+                onClick={() => {
+                  coinList.length < 3
+                    && setCoinManagerOpen(true);
+                }}
                 variant="contained"
               >
                 Select coins
@@ -181,7 +184,7 @@ function App() {
                 <MenuItem value={30}>30</MenuItem>
                 <MenuItem value={90}>90</MenuItem>
                 <MenuItem value={365}>180</MenuItem>
-                <MenuItem value={'max'}>Max</MenuItem>
+                <MenuItem value={"max"}>Max</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -246,9 +249,11 @@ function App() {
             </Typography>
           )}
         </div>
-        
-        <div style={{marginTop:"75px"}}>
-          {analysisStarted && <GeneralAnalysisPage currency={currency} days={days}/>}
+
+        <div style={{ marginTop: "75px" }}>
+          {analysisStarted && (
+            <GeneralAnalysisPage currency={currency} days={days} />
+          )}
         </div>
       </main>
     </div>
