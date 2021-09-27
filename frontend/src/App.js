@@ -43,7 +43,6 @@ function App() {
   // useState for the currency, status and rerendering
   const [currency, setCurrency] = useState(currencies[0]);
   const [days, setDays] = useState(7);
-  const [analysisStarted, setAnalysisStarted] = useState(false)
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
   const { coinList, setCoinManagerOpen, coinManagerOpen } = useContext(AppContext)
@@ -117,7 +116,7 @@ function App() {
               <Typography variant="subtitle1">Settings:</Typography>
               <Button
                 onClick={() => {
-                  coinList.length < 3
+                  coinList.length < 2
                     && setCoinManagerOpen(true);
                 }}
                 variant="contained"
@@ -195,23 +194,6 @@ function App() {
           justifyContent="center"
           alignItems="flex-end"
         >
-          <div style={{ padding: 20 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginTop: "10px" }}
-              onClick={() => setAnalysisStarted(true)}
-            >
-              Start analysis
-            </Button>
-          </div>
-        </Grid>
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="flex-end"
-        >
           <div>
             <Typography variant="subtitle1">Status GeckoAPI:</Typography>
             {live ? (
@@ -251,9 +233,7 @@ function App() {
         </div>
 
         <div style={{ marginTop: "75px" }}>
-          {analysisStarted && (
             <GeneralAnalysisPage currency={currency} days={days} />
-          )}
         </div>
       </main>
     </div>

@@ -86,7 +86,7 @@ const OverviewPage = (props) => {
 
       // Returns a single card for a crypto coin with its information.
       return (
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <Card variant="outlined">
             <Grid
               container
@@ -117,7 +117,7 @@ const OverviewPage = (props) => {
                   </Button>
                   <Button 
                     variant="outlined"
-                    style={{ marginTop: "10px" }}
+                    style={{ marginTop: "10px", marginLeft: "10px" }}
                     onClick = {() => {onRemoveCoin(result_name[i])}}
                     >
                     Remove coin

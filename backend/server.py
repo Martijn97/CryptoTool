@@ -22,7 +22,7 @@ def coin_value_list():
         data_value = crypto_data.get_price(ids=total, vs_currencies=['usd', 'eur', 'gbp'])
         return data_value
 
-# Retrieve the OHLC data of the list of coins selected in the tool
+# Retrieve the OHLC and volume data of the list of coins selected in the tool
 @app.route("/OHLC_data")
 def ohlc_data():
     coins = request.args.getlist('coins[]')
@@ -30,18 +30,26 @@ def ohlc_data():
     currencies=['usd', 'eur','gbp']
 
     all_ohlc_data = {}
+    all_volume_data = {}
     ohlc_data_coin_currencies = {}
+    volume_data_coin_currencies = {}
 
     for coin in coins:
         for currency in currencies:
             ohlc_data_coin = {currency: crypto_data.get_coin_ohlc_by_id(id=coin, vs_currency=currency, days=days)}
+            volume_data_coin = {currency: crypto_data.get_coin_market_chart_by_id(id=coin, vs_currency=currency, days=days)["total_volumes"]}
             ohlc_data_coin_currencies.update(ohlc_data_coin)
+            volume_data_coin_currencies.update(volume_data_coin)
             
         ohlc_data_coins_currency = {coin: ohlc_data_coin_currencies}
+        volume_data_coin_currency = {coin: volume_data_coin_currencies}
         ohlc_data_coin_currencies = {}
-        all_ohlc_data.update(ohlc_data_coins_currency)
+        volume_data_coin_currencies = {}
 
-    return all_ohlc_data
+        all_ohlc_data.update(ohlc_data_coins_currency)
+        all_volume_data.update(volume_data_coin_currency)
+
+    return {'ohlc': all_ohlc_data, 'volume': all_volume_data}
 
 
 # Retrieves the information of the coins in coinsList
