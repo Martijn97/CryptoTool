@@ -14,6 +14,8 @@ const CandlestickChart = (props) => {
 
   // State that keeps track of the selected points for the trend line
   const [trendLineData, setTrendLineData] = useState([]);
+  // State used to force a re-render of the page
+  const [random, setRandom] = useState(Math.random());
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const ohlc_values_coin = JSONPath({
@@ -44,6 +46,13 @@ const CandlestickChart = (props) => {
         y: trendLineData[1].y[1]},
       ]);
     };
+  };
+
+  // Function called in the trendline menu to remove dates.
+  function onRemoveDate(index) {
+    trendLineData.splice(index, 1);
+    setTrendLineData(trendLineData);
+    setRandom(Math.random());
   };
 
   // The settings and data of the candlestick chart
@@ -121,7 +130,11 @@ const CandlestickChart = (props) => {
                     return (
                       <Grid container alignItems="center" justifyContent="left">
                         <Grid item md={8} style={{ marginTop: "5px" }}>
-                          <Button variant="outlined" startIcon={<DeleteIcon />}>
+                          <Button 
+                            variant="outlined" 
+                            startIcon={<DeleteIcon />}
+                            onClick={()=>onRemoveDate(trendLineData.indexOf(i))}
+                          >
                             <Typography variant="h6" component="div">
                               {moment(i.x).format("L").toString()}
                             </Typography>
@@ -131,7 +144,7 @@ const CandlestickChart = (props) => {
                     );
                   })}
                   {trendLineData.length === 0 && 
-                    <Typography>
+                    <Typography style={{marginTop: "5px"}}>
                       Select datapoints to draw the trendline
                     </Typography>
                   }
