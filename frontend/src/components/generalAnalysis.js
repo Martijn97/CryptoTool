@@ -58,7 +58,7 @@ const GeneralAnalysisPage = (props) => {
             <Grid container justifyContent="left" style={{ margin: "30px" }}>
               <Grid item xs={12}>
                 <CardContent>
-                  <Typography variant="h4" component="h2">
+                  <Typography variant="h4" component="h2" style={{ marginLeft: "30px", marginTop: "10px" }}>
                     {/*name of the coin*/}
                     {capitalizeFirstLetter(name)}
                   </Typography>
@@ -66,8 +66,8 @@ const GeneralAnalysisPage = (props) => {
               </Grid>
               <Grid
                 item
-                xs={8}
-                md={8}
+                xs={12}
+                md={12}
                 justifyContent="center"
                 alignItems="center"
               >
@@ -78,8 +78,8 @@ const GeneralAnalysisPage = (props) => {
             <Grid container justifyContent="left" style={{ margin: "30px" }}>
               <Grid
                 item
-                xs={10}
-                md={8}
+                xs={12}
+                md={9}
                 justifyContent="center"
                 alignItems="center"
               >
