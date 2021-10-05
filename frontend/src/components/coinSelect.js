@@ -35,6 +35,23 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
       });
   }
 
+  // Function that adds the colours to the Treemap based on the growth in the last 24h
+  function coloursTreeMap(coinSelection) {
+    const colours = []
+
+    coinSelection?.data.map((item) => {
+
+      // Compute the opacity and places a minimum opacity of 0.2
+      const opacity = 0.2 + (15 * (Math.abs(item.price_change_percentage_24h)/100));
+
+      // Add colour to the array of colours
+      item.price_change_percentage_24h < 0 ? colours.push("rgba(255, 0, 0," + opacity + ")") : colours.push("rgba(0, 128, 0," + opacity + ")");
+    })
+
+    // return the array back to the TreeMap
+    return colours
+  };
+
   // Transforms the data into the right format for the Treemap
   const transformDataSyntax = () => {
     const coin_selection_list = []
@@ -56,6 +73,13 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
     options: {
       legend: {
         show: false,
+      },
+      colors: coloursTreeMap(coinSelection),
+      plotOptions: {
+        treemap: {
+          distributed: true,
+          enableShades: false
+        }
       },
       chart: {
         type: "treemap",
@@ -90,7 +114,8 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
         <DialogTitle id="form-dialog-title">Select coins</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Select coins below to add it to your analysis. Press done or cancel to continue to the overview page
+            Select coins below to add it to your analysis. The colour of the coins represents the positive or negative growth in the last 24 hours.
+            Press done or cancel to continue to the overview page
           </DialogContentText>
           <InputLabel id="demo-simple-select-label">Coins:</InputLabel>
           {/* The treemap */}
