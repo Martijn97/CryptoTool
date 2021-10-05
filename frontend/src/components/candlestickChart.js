@@ -19,7 +19,6 @@ const CandlestickChart = (props) => {
   // State used to force a re-render of the page
   const [random, setRandom] = useState(Math.random());
 
-
   // Function that computes the amount the trend line is extended.
   function computeExtension(days) {
     const timeExtensionTrendLine =
@@ -38,8 +37,6 @@ const CandlestickChart = (props) => {
     onRemoveDate(1);
     onRemoveDate(0);
   }, [props.days])
-
-  console.log(trendLineExtension)
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const ohlc_values_coin = JSONPath({
@@ -83,9 +80,12 @@ const CandlestickChart = (props) => {
       
       // Compute the difference between the points based on diffYesterday
       const divideMoment = diffMoment / diffYesterday;
+
+      // Compute if the trendline is decreasing or increasing
+      const directionTrendline = trendLineData[0].y[1] > trendLineData[1].y[1] ? 1 : 2;
       
       // Compute the difference in value between the two points
-      const diffLineData = trendLineData[0].y[1] - trendLineData[1].y[1];
+      const diffLineData = trendLineData[0].y[directionTrendline] - trendLineData[1].y[directionTrendline];
       
       return [
         {
@@ -95,16 +95,16 @@ const CandlestickChart = (props) => {
               .format("YYYY-MM-DD HH:mm:ss")
           ),
           y:
-            trendLineData[0].y[1] +
+            trendLineData[0].y[directionTrendline] +
             trendLineExtension * (diffLineData / -divideMoment),
         },
         {
           x: new Date(moment(trendLineData[0].x).format("YYYY-MM-DD HH:mm:ss")),
-          y: trendLineData[0].y[1],
+          y: trendLineData[0].y[directionTrendline],
         },
         {
           x: new Date(moment(trendLineData[1].x).format("YYYY-MM-DD HH:mm:ss")),
-          y: trendLineData[1].y[1],
+          y: trendLineData[1].y[directionTrendline],
         },
         {
           x: new Date(
@@ -113,7 +113,7 @@ const CandlestickChart = (props) => {
               .format("YYYY-MM-DD HH:mm:ss")
           ),
           y:
-            trendLineData[1].y[1] -
+            trendLineData[1].y[directionTrendline] -
             trendLineExtension * (diffLineData / -divideMoment),
         },
       ];
