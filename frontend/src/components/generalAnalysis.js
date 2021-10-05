@@ -72,7 +72,7 @@ const GeneralAnalysisPage = (props) => {
                 alignItems="center"
               >
                 {/*Calls the function to render the Candlestick chart*/}
-                <CandlestickChart name={name} ohlc={ohlc} currency={current_currency()}/>
+                <CandlestickChart name={name} ohlc={ohlc} currency={current_currency()} days={props.days}/>
               </Grid>
             </Grid>
             <Grid container justifyContent="left" style={{ margin: "30px" }}>
