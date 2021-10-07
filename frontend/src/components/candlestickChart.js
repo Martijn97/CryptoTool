@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { CanvasJSChart } from "canvasjs-react-charts";
-import { Grid, Typography } from "@material-ui/core";
-import { Box, Card, Button, CardContent, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { AppContext } from "./../context/AppContext";
+import { Grid } from "@material-ui/core";
 import { JSONPath } from "jsonpath-plus";
 import moment from "moment";
 
@@ -12,12 +11,12 @@ const CandlestickChart = (props) => {
   const ohlc = props.ohlc;
   const currency = props.currency;
 
-  // State that keeps track of the selected points for the trend line
-  const [trendLineData, setTrendLineData] = useState([]);
-  // State that keeps track of the extension of the trendline.
-  const [trendLineExtension, setTrendLineExtension] = useState();
+  // States from the context that contain general information. 
+  // Used to communicate to the generalAnalysis component
+  const { trendLineExtension, setTrendLineExtension, trendLineData, setTrendLineData , 
+    timespan, showMovingAverage } = useContext(AppContext);
   // State used to force a re-render of the page
-  const [random, setRandom] = useState(Math.random());
+  const [, setRandom] = useState(Math.random());
 
   // Function that computes the amount the trend line is extended.
   function computeExtension(days) {
@@ -120,6 +119,46 @@ const CandlestickChart = (props) => {
     }
   };
 
+  // Function that returns the data for the moving average plot
+  const movingAverageData = (ohlc_values_coin) => {
+    // Checks if the moving average plot needs to be shown
+    if (!showMovingAverage) {
+      return [];
+    }
+
+    const coinClosingValues = []
+
+    // Sets the timespan from string to number of days.
+    const timeMultiplication = timespan === 'day' ? 1 : timespan === 'month' ? 31 : 365;
+
+    ohlc_values_coin.map((i) => {
+      // contains the date of the current item
+      let date = new Date(moment(i[0]).format("YYYY-MM-DD HH:mm:ss"));
+
+      let valuesTimespan = []
+
+      // check for each other item if it is within the timestamp near to the current item
+      ohlc_values_coin.map((i) => {
+        let diffTime = date - i[0]
+
+        return 0 <= diffTime && diffTime < (timeMultiplication * 86400000) && valuesTimespan.push(i[4]) 
+      })
+
+      // Add all the point together
+      const value = valuesTimespan.reduce(function (a, b) {
+        return a + b;
+      }, 0);
+
+      // Push the points to the array
+      return coinClosingValues.push({
+        x: date, 
+        y: value/valuesTimespan.length
+      })
+    });
+
+    return coinClosingValues;
+  };
+
   // Function called in the trendline menu to remove dates.
   function onRemoveDate(index) {
     trendLineData.splice(index, 1);
@@ -166,97 +205,18 @@ const CandlestickChart = (props) => {
         lineThickness: 3,
         dataPoints: trendLineChartData(trendLineData),
       },
+      {
+        type: "spline",
+        dataPoints: movingAverageData(ohlc_values_coin)
+      },
     ],
   };
 
   // Return the CanvasJS Candlestick chart.
   return (
-    <>
-      <Grid container justifyContent="left" style={{ margin: "30px" }}>
-        <Grid item xs={8} md={9} justifyContent="center" alignItems="center">
-          <CanvasJSChart options={options} />
-        </Grid>
-        <Grid item>
-          <Box>
-            <Card variant="outlined" style={{ margin: "5px" }}>
-              <CardContent>
-                <Typography
-                  variant="h5"
-                  style={{
-                    marginTop: "10px",
-                    marginLeft: "30px",
-                    marginRight: "30px",
-                  }}
-                >
-                  Trendline
-                </Typography>
-                <div
-                  style={{
-                    marginLeft: "30px",
-                    marginRight: "30px",
-                    marginBottom: "10px",
-                    maxWidth: "150px",
-                  }}
-                >
-                  <Typography style={{ marginTop: "5px" }}>
-                    Extend trendline by:
-                  </Typography>
-                  <TextField
-                    id="outlined-number"
-                    label="Days (optional)"
-                    type="number"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    style={{marginTop: "5px"}}
-                    value={trendLineExtension}
-                    onChange={(e)=> {e.target.value >= 1 && setTrendLineExtension(e.target.value)}}
-                  />
-                </div>
-                <div
-                  style={{
-                    marginLeft: "30px",
-                    marginRight: "30px",
-                    marginBottom: "10px",
-                    maxWidth: "150px",
-                  }}
-                >
-                  {trendLineData.length > 0 && (
-                    <Typography style={{ marginTop: "5px" }}>
-                      Dates:
-                    </Typography>
-                  )}
-                  {trendLineData.map((i) => {
-                    return (
-                      <Grid container alignItems="center" justifyContent="left">
-                        <Grid item md={8} style={{ marginTop: "5px" }}>
-                          <Button
-                            variant="outlined"
-                            startIcon={<DeleteIcon />}
-                            onClick={() =>
-                              onRemoveDate(trendLineData.indexOf(i))
-                            }
-                          >
-                            <Typography variant="h6" component="div">
-                              {moment(i.x).format("L").toString()}
-                            </Typography>
-                          </Button>
-                        </Grid>
-                      </Grid>
-                    );
-                  })}
-                  {trendLineData.length === 0 && (
-                    <Typography style={{ marginTop: "5px" }}>
-                      Select datapoints to draw the trendline
-                    </Typography>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </Box>
-        </Grid>
-      </Grid>
-    </>
+    <Grid container justifyContent="left">
+      <CanvasJSChart options={options} />
+    </Grid>
   );
 };
 
