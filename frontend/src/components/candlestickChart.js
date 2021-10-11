@@ -43,6 +43,12 @@ const CandlestickChart = (props) => {
     json: ohlc,
   });
 
+  // Slice the data in a certain currency of a specific coin from the entire dataset
+  const ohlc_values_year_coin = JSONPath({
+    path: "$.[ohlc_year].[" + name + "].[" + currency + "].*",
+    json: ohlc,
+  });
+
   // The function converts OHLC data into the right input for the Candlestick chart
   const candlestickChartData = (ohlc_values_coin) => {
     const data = [];
@@ -120,12 +126,15 @@ const CandlestickChart = (props) => {
   };
 
   // Function that returns the data for the moving average plot
-  const movingAverageData = (ohlc_values_coin) => {
+  const movingAverageData = (ohlc_values_coin, ohlc_values_year_coin) => {
     // Checks if the moving average plot needs to be shown
     if (!showMovingAverage) {
       return [];
     }
 
+    // Add the ohlc data of the last year to the dataset
+    const ohlc_values_coin_concat = ohlc_values_coin.concat(ohlc_values_year_coin)
+    // Empty array to fill with the results
     const coinClosingValues = []
 
     // Sets the timespan from string to number of days.
@@ -138,7 +147,7 @@ const CandlestickChart = (props) => {
       let valuesTimespan = []
 
       // check for each other item if it is within the timestamp near to the current item
-      ohlc_values_coin.map((i) => {
+      ohlc_values_coin_concat.map((i) => {
         let diffTime = date - i[0]
 
         return 0 <= diffTime && diffTime < (timeMultiplication * 86400000) && valuesTimespan.push(i[4]) 
@@ -207,7 +216,7 @@ const CandlestickChart = (props) => {
       },
       {
         type: "spline",
-        dataPoints: movingAverageData(ohlc_values_coin)
+        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin)
       },
     ],
   };

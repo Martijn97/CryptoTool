@@ -255,7 +255,7 @@ const GeneralAnalysisPage = (props) => {
                               }
                               variant="contained"
                             >
-                              Show plot
+                              { showMovingAverage ? "Hide plot" : "Show plot" }
                             </Button>
                           </div>
                         </FormControl>
