@@ -14,7 +14,7 @@ const CandlestickChart = (props) => {
   // States from the context that contain general information. 
   // Used to communicate to the generalAnalysis component
   const { trendLineExtension, setTrendLineExtension, trendLineData, setTrendLineData , 
-    timespan, showMovingAverage } = useContext(AppContext);
+    timespan, showMovingAverage, candlestickPatterns, showPatterns } = useContext(AppContext);
   // State used to force a re-render of the page
   const [, setRandom] = useState(Math.random());
 
@@ -48,6 +48,46 @@ const CandlestickChart = (props) => {
     path: "$.[ohlc_year].[" + name + "].[" + currency + "].*",
     json: ohlc,
   });
+
+  // Get the pattern data of this specific coin
+  const get_pattern_data = (candlestickPatterns) => {
+    const pattern_data = [];
+    candlestickPatterns.map((i, index) => {
+      if (i?.name === name) {
+        return pattern_data.push(
+          JSONPath({
+            path: "$[" + index + "].data.*",
+            json: candlestickPatterns,
+          })
+        );
+      }
+    });
+
+    return pattern_data[0];
+  };
+
+  // Transform the candlestick pattern data into the right format
+  const format_pattern_data = (patterns) => {
+    const pattern_data = [];
+
+    patterns?.map((i) => {
+      return pattern_data.push({
+        name: i.name,
+        data: [
+          i.data.map((i) => {
+            return {
+              x: new Date(i.date),
+              y: i.y,
+            };
+          }),
+        ],
+      });
+    });
+    return pattern_data;
+  };
+  
+  // Execute the two function above to get the right format data.
+  const pattern_data = format_pattern_data(get_pattern_data(candlestickPatterns))
 
   // The function converts OHLC data into the right input for the Candlestick chart
   const candlestickChartData = (ohlc_values_coin) => {
@@ -218,6 +258,69 @@ const CandlestickChart = (props) => {
         type: "spline",
         dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin)
       },
+      {
+				type: "scatter",
+        name: "Shooting Star",
+				markerType: "triangle",
+        markerColor: '#340034',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[0]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bullish Kicker",
+				markerType: "triangle",
+        markerColor: '#4d004d',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[1]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bearish Kicker",
+				markerType: "triangle",
+        markerColor: '#670067',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[2]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bullish Engulfing",
+				markerType: "triangle",
+        markerColor: '#800080',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[3]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bearish Engulfing",
+				markerType: "triangle",
+        markerColor: '#9a009a',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[3]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bullish Harami",
+				markerType: "triangle",
+        markerColor: '#b300b3',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[5]?.data[0] : []
+			},
+      {
+				type: "scatter",
+        name: "Bearish Harami",
+				markerType: "triangle",
+        markerColor: '#cd00cd',
+        markerSize: 20,
+				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
+				dataPoints: showPatterns ? pattern_data[6]?.data[0] : []
+			},
     ],
   };
 

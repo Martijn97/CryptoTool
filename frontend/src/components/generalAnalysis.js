@@ -24,6 +24,7 @@ import axios from "axios";
 import moment from "moment";
 import VolumeChart from "./volumeChart";
 import CandlestickChart from "./candlestickChart";
+import CandlestickPatternRecognition from "./candlestickPatternRecognition"
 
 /*
 This components returns a grid of cards. In each card the Candlestick chart of a specific coin
@@ -52,6 +53,7 @@ const GeneralAnalysisPage = (props) => {
     setTimespan,
     setShowMovingAverage,
     showMovingAverage,
+    setCandlestickPatterns,
   } = useContext(AppContext);
 
   // Styling
@@ -65,6 +67,7 @@ const GeneralAnalysisPage = (props) => {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch(coinList);
+    setCandlestickPatterns([])
   }, [coinList, props.days, setRandom]);
 
   // Function with the API calls
@@ -151,6 +154,7 @@ const GeneralAnalysisPage = (props) => {
                 md={2}
                 justifyContent="center"
                 alignItems="center"
+                style={{marginLeft: "15px"}}
               >
                 <div>
                   <Accordion>
@@ -260,6 +264,23 @@ const GeneralAnalysisPage = (props) => {
                           </div>
                         </FormControl>
                       </div>
+                    </AccordionDetails>
+                  </Accordion>
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel2a-content"
+                      id="panel2a-header"
+                    >
+                      <Typography>Candlestick patterns</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {/* The candlestick pattern card */}
+                      <CandlestickPatternRecognition
+                        name={name}
+                        ohlc={ohlc}
+                        currency={current_currency()}
+                      />
                     </AccordionDetails>
                   </Accordion>
                 </div>

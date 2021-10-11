@@ -15,6 +15,7 @@
     "JSONPath": "^0.11.2",
     "apexcharts": "^3.28.3",
     "axios": "^0.21.1",
+    "candlestick": "0.0.3",
     "canvasjs": "^1.8.2",
     "canvasjs-react-charts": "^1.0.5",
     "d3-scale": "^4.0.2",
