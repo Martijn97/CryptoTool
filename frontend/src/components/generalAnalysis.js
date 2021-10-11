@@ -54,6 +54,7 @@ const GeneralAnalysisPage = (props) => {
     setShowMovingAverage,
     showMovingAverage,
     setCandlestickPatterns,
+    setShowPatterns,
   } = useContext(AppContext);
 
   // Styling
@@ -68,7 +69,8 @@ const GeneralAnalysisPage = (props) => {
   useEffect(() => {
     reFetch(coinList);
     setCandlestickPatterns([])
-  }, [coinList, props.days, setRandom]);
+    setShowPatterns(false)
+  }, [coinList, props.days, setRandom, props.currency]);
 
   // Function with the API calls
   async function reFetch(coinList) {

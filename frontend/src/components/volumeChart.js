@@ -45,10 +45,12 @@ const VolumeChart = (props) => {
       {
         type: "column",
         showInLegend: false,
-        name: name,
+        name: name + " volume",
         color: "grey",
-        yValueFormatString: "$###0.00",
-        xValueFormatString: "DD MM YY",
+        yValueFormatString: "###0",
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#5a5a5a ">{name}</span><br>Date: {x}<br> Volume: {y}',
         dataPoints: volumeChartData(volume_values_coin),
       },
     ],

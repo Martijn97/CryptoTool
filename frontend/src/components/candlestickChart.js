@@ -35,7 +35,7 @@ const CandlestickChart = (props) => {
     // When the scope of the candlestick plot is changed. The trendline should be removed.
     onRemoveDate(1);
     onRemoveDate(0);
-  }, [props.days])
+  }, [props.days, props.currency])
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const ohlc_values_coin = JSONPath({
@@ -238,8 +238,10 @@ const CandlestickChart = (props) => {
         name: name,
         risingColor: "#4ca64c",
         fallingColor: "#ff4c4c",
-        yValueFormatString: "$###0.00",
-        xValueFormatString: "DD MM YY",
+        yValueFormatString: currency === "eur" ? "€ ###0.00" : currency === "usd" ? "$ ###0.00" : "£ ###0.00",
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#5a5a5a ">{name}</span><br>Date: {x}<br>Open: {y[0]}<br>High: {y[1]}<br>Low: {y[2]}<br>Close: {y[3]}',
         click: function (e) {
           trendLineData.length < 2 &&
             setTrendLineData((trendLineData) => {
@@ -256,71 +258,88 @@ const CandlestickChart = (props) => {
       },
       {
         type: "spline",
-        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin)
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
+        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin),
       },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Shooting Star",
-				markerType: "triangle",
-        markerColor: '#340034',
+        markerType: "triangle",
+        markerColor: "#340034",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[0]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[0]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bullish Kicker",
-				markerType: "triangle",
-        markerColor: '#4d004d',
+        markerType: "triangle",
+        markerColor: "#4d004d",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[1]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[1]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bearish Kicker",
-				markerType: "triangle",
-        markerColor: '#670067',
+        markerType: "triangle",
+        markerColor: "#670067",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[2]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[2]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bullish Engulfing",
-				markerType: "triangle",
-        markerColor: '#800080',
+        markerType: "triangle",
+        markerColor: "#800080",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[3]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[3]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bearish Engulfing",
-				markerType: "triangle",
-        markerColor: '#9a009a',
+        markerType: "triangle",
+        markerColor: "#9a009a",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[3]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[3]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bullish Harami",
-				markerType: "triangle",
-        markerColor: '#b300b3',
+        markerType: "triangle",
+        markerColor: "#b300b3",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[5]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[5]?.data[0] : [],
+      },
       {
-				type: "scatter",
+        type: "scatter",
         name: "Bearish Harami",
-				markerType: "triangle",
-        markerColor: '#cd00cd',
+        markerType: "triangle",
+        markerColor: "#cd00cd",
         markerSize: 20,
-				toolTipContent: "<span style=\"color:#cd00cd \">{name}</span><br>Date: {x}",
-				dataPoints: showPatterns ? pattern_data[6]?.data[0] : []
-			},
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
+        dataPoints: showPatterns ? pattern_data[6]?.data[0] : [],
+      },
     ],
   };
 
