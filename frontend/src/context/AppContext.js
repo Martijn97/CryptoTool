@@ -21,6 +21,8 @@ export const AppProviders = ({children}) => {
   const [showPatterns, setShowPatterns] = useState(false);
   // State that keeps track of the found patterns
   const [candlestickPatterns, setCandlestickPatterns] = useState([]);
+  // State that returns true when the candlestick pattern Dialog must be shown or not
+  const [patternInfoModalOpen, setPatternInfoModalOpen] = useState(false);
 
   // All the values to be returned by the AppContext.
   const value = {
@@ -42,6 +44,8 @@ export const AppProviders = ({children}) => {
     setCandlestickPatterns,
     showPatterns,
     setShowPatterns,
+    patternInfoModalOpen, 
+    setPatternInfoModalOpen,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

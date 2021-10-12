@@ -16,12 +16,15 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 
 const CandlestickPatternRecognition = ({ name, ohlc, currency }) => {
   const {
     setCandlestickPatterns,
     showPatterns,
     setShowPatterns,
+    setPatternInfoModalOpen,
   } = useContext(AppContext);
   const nameCoin = name;
 
@@ -101,6 +104,13 @@ const CandlestickPatternRecognition = ({ name, ohlc, currency }) => {
         >
           {showPatterns ? "Hide patterns" : "Flag patterns"}
         </Button>
+        <IconButton 
+          aria-label="info"
+          style={{margin: "10px", marginBottom: "20px"}}
+          onClick={() => {setPatternInfoModalOpen(true)}}
+        >
+          <InfoIcon />
+        </IconButton>
         {patterns.map((i) => {
           return (
             // Show for each pattern type the number of occurences

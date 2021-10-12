@@ -3,6 +3,7 @@ import { JSONPath } from "jsonpath-plus";
 import { Card, CardContent, CardMedia, Typography, Grid, Button } from "@material-ui/core";
 import CoinSelector from './coinSelect.js'
 import CoinInfoModal from "./coinInfo.js";
+import PatternInfoModal from "./patternInfo"
 import { AppContext } from '../context/AppContext';
 import axios from "axios";
 
@@ -21,8 +22,16 @@ const OverviewPage = (props) => {
   const [random, setRandom] = useState(Math.random());
 
   // Global states from the context
-  const { coinManagerOpen, setCoinManagerOpen, infoModalOpen, 
-    setInfoModalOpen, coinList, setCoinList } = useContext(AppContext);
+  const {
+    coinManagerOpen,
+    setCoinManagerOpen,
+    infoModalOpen,
+    setInfoModalOpen,
+    coinList,
+    setCoinList,
+    patternInfoModalOpen,
+    setPatternInfoModalOpen,
+  } = useContext(AppContext);
 
   // Repsponsible for rendering
   useEffect(() => {
@@ -59,7 +68,7 @@ const OverviewPage = (props) => {
     json: coin_info,
   });
 
-  // Function to remove a coin from coinList 
+  // Function to remove a coin from coinList
   // when the remove button is used
   function onRemoveCoin(coin_name) {
     const index = coinList.indexOf(coin_name);
@@ -67,7 +76,7 @@ const OverviewPage = (props) => {
     coinList.splice(index, 1);
     setCoinList(coinList);
     setRandom(Math.random());
-  };
+  }
 
   const currencyTable = (coin_value, coin_info) => {
     // Return the name of the cryptocurrencies
@@ -108,18 +117,23 @@ const OverviewPage = (props) => {
                       ? "$ " + result[1]
                       : "£ " + result[2]}
                   </Typography>
-                  <Button 
-                    variant="contained" 
+                  <Button
+                    variant="contained"
                     style={{ marginTop: "10px" }}
-                    onClick = {() => {setInfoModalOpen(true); setCoinClicked(result_name[i])}}
-                    >
+                    onClick={() => {
+                      setInfoModalOpen(true);
+                      setCoinClicked(result_name[i]);
+                    }}
+                  >
                     More info
                   </Button>
-                  <Button 
+                  <Button
                     variant="outlined"
                     style={{ marginTop: "10px", marginLeft: "10px" }}
-                    onClick = {() => {onRemoveCoin(result_name[i])}}
-                    >
+                    onClick={() => {
+                      onRemoveCoin(result_name[i]);
+                    }}
+                  >
                     Remove coin
                   </Button>
                 </CardContent>
@@ -158,7 +172,7 @@ const OverviewPage = (props) => {
 
     return createTable(crypto_coins);
   };
-  
+
   return (
     <>
       {currencyTable(coin_value, coin_info)}
@@ -166,10 +180,14 @@ const OverviewPage = (props) => {
         coinManagerOpen={coinManagerOpen}
         onCloseCoinManager={() => setCoinManagerOpen(false)}
       />
-      <CoinInfoModal 
+      <CoinInfoModal
         infoModalOpen={infoModalOpen}
         onCloseInfoModel={() => setInfoModalOpen(false)}
         data={description_coin}
+      />
+      <PatternInfoModal
+        patternInfoModalOpen={patternInfoModalOpen}
+        onClosePatternInfoModal={() => setPatternInfoModalOpen(false)}
       />
     </>
   );
