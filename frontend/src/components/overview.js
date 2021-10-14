@@ -3,6 +3,7 @@ import { JSONPath } from "jsonpath-plus";
 import { Card, CardContent, CardMedia, Typography, Grid, Button } from "@material-ui/core";
 import CoinSelector from './coinSelect.js'
 import CoinInfoModal from "./coinInfo.js";
+import MovingAverageInfo from "./movingAverageInfo.js";
 import PatternInfoModal from "./patternInfo"
 import { AppContext } from '../context/AppContext';
 import axios from "axios";
@@ -31,6 +32,8 @@ const OverviewPage = (props) => {
     setCoinList,
     patternInfoModalOpen,
     setPatternInfoModalOpen,
+    movingAverageInfoShown, 
+    setMovingAverageInfoShown,
   } = useContext(AppContext);
 
   // Repsponsible for rendering
@@ -188,6 +191,10 @@ const OverviewPage = (props) => {
       <PatternInfoModal
         patternInfoModalOpen={patternInfoModalOpen}
         onClosePatternInfoModal={() => setPatternInfoModalOpen(false)}
+      />
+      <MovingAverageInfo 
+        movingAverageInfoOpen={movingAverageInfoShown}
+        onClosemovingAverageInfo={() => setMovingAverageInfoShown(false)}
       />
     </>
   );

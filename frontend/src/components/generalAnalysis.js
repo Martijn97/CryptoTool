@@ -24,7 +24,9 @@ import axios from "axios";
 import moment from "moment";
 import VolumeChart from "./volumeChart";
 import CandlestickChart from "./candlestickChart";
-import CandlestickPatternRecognition from "./candlestickPatternRecognition"
+import CandlestickPatternRecognition from "./candlestickPatternRecognition";
+import IconButton from '@mui/material/IconButton';
+import InfoIcon from '@mui/icons-material/Info';
 
 /*
 This components returns a grid of cards. In each card the Candlestick chart of a specific coin
@@ -53,6 +55,9 @@ const GeneralAnalysisPage = (props) => {
     setTimespan,
     setShowMovingAverage,
     showMovingAverage,
+    setShowFlagsMovingAverage,
+    showFlagsMovingAverage, 
+    setMovingAverageInfoShown,
     setCandlestickPatterns,
     setShowPatterns,
   } = useContext(AppContext);
@@ -156,7 +161,7 @@ const GeneralAnalysisPage = (props) => {
                 md={2}
                 justifyContent="center"
                 alignItems="center"
-                style={{marginLeft: "15px"}}
+                style={{ marginLeft: "15px" }}
               >
                 <div>
                   <Accordion>
@@ -247,7 +252,7 @@ const GeneralAnalysisPage = (props) => {
                             id="period-select"
                             value={timespan}
                             label="Period (optional)"
-                            style={{width:"200px"}}
+                            style={{ width: "200px" }}
                             onChange={(e) => setTimespan(e.target.value)}
                           >
                             <MenuItem value={"day"}>Day</MenuItem>
@@ -261,7 +266,27 @@ const GeneralAnalysisPage = (props) => {
                               }
                               variant="contained"
                             >
-                              { showMovingAverage ? "Hide plot" : "Show plot" }
+                              {showMovingAverage ? "Hide plot" : "Show plot"}
+                            </Button>
+                            <IconButton
+                              aria-label="info"
+                              style={{ margin: "10px", marginBottom: "10px" }}
+                              onClick={() => {
+                                setMovingAverageInfoShown(true);
+                              }}
+                            >
+                              <InfoIcon />
+                            </IconButton>
+                          </div>
+                          <div style={{ marginTop: "10px" }}>
+                            <Button
+                              onClick={() =>
+                                setShowFlagsMovingAverage(!showFlagsMovingAverage)
+                              }
+                              variant="contained"
+                              disabled={!showMovingAverage}
+                            >
+                              {showFlagsMovingAverage ? "Hide intersections" : "Flag intersections"}
                             </Button>
                           </div>
                         </FormControl>

@@ -14,7 +14,7 @@ const CandlestickChart = (props) => {
   // States from the context that contain general information. 
   // Used to communicate to the generalAnalysis component
   const { trendLineExtension, setTrendLineExtension, trendLineData, setTrendLineData , 
-    timespan, showMovingAverage, candlestickPatterns, showPatterns } = useContext(AppContext);
+    timespan, showMovingAverage, candlestickPatterns, showPatterns, showFlagsMovingAverage } = useContext(AppContext);
   // State used to force a re-render of the page
   const [, setRandom] = useState(Math.random());
 
@@ -208,6 +208,44 @@ const CandlestickChart = (props) => {
     return coinClosingValues;
   };
 
+  // Get the data of the intersection points between the prices and the moving average
+  const movingAverageIntersectionData = (ohlc_values_coin, ohlc_values_year_coin) => {
+    // Check if the intersections must be plotted or not
+    if (!showFlagsMovingAverage) {
+      return
+    }
+
+    // Get the moving average data
+    const MA_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin);
+
+    // Create an empty array to store the positions of the intersections
+    const topOrBottomPrice = []
+    const positionIntersection = []
+    
+    // Check for each point if it is on top or below the moving average.
+    MA_Data.map((i, index) => {
+      if (i.y > ohlc_values_coin[index][4]) {
+        return topOrBottomPrice.push(1)
+      } else {
+        return topOrBottomPrice.push(0)
+      }
+    })
+
+    // Transform the data into data that can be plotted
+    topOrBottomPrice.map((i, index) => {
+      if (index === 0) {
+        return null
+      }
+      if ( i !== topOrBottomPrice[index-1]) {
+        return positionIntersection.push(MA_Data[index])
+      } else {
+        return null
+      }
+    })
+
+    return positionIntersection
+  }
+
   // Function called in the trendline menu to remove dates.
   function onRemoveDate(index) {
     trendLineData.splice(index, 1);
@@ -259,6 +297,7 @@ const CandlestickChart = (props) => {
       {
         type: "spline",
         xValueFormatString: "DD-MM-YYYY",
+        markerType: "none",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
         dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin),
@@ -339,6 +378,17 @@ const CandlestickChart = (props) => {
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
         dataPoints: showPatterns ? pattern_data[6]?.data[0] : [],
+      },
+      {
+        type: "scatter",
+        name: "Moving Average Intersection",
+        markerType: "circle",
+        markerColor: "#FFFF00",
+        markerSize: 10,
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#cd00cd ">Moving average intersection</span><br>Date: {x}',
+        dataPoints: movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
       },
     ],
   };

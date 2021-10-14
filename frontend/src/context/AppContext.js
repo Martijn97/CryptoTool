@@ -23,7 +23,11 @@ export const AppProviders = ({children}) => {
   const [candlestickPatterns, setCandlestickPatterns] = useState([]);
   // State that returns true when the candlestick pattern Dialog must be shown or not
   const [patternInfoModalOpen, setPatternInfoModalOpen] = useState(false);
-
+  // State that returns true when the moving average Dialog must be shown or not
+  const [movingAverageInfoShown, setMovingAverageInfoShown] = useState(false);
+  // State that returns true when the moving average must be shown or not
+  const [showFlagsMovingAverage, setShowFlagsMovingAverage] = useState(false);
+  
   // All the values to be returned by the AppContext.
   const value = {
     coinManagerOpen,
@@ -46,6 +50,10 @@ export const AppProviders = ({children}) => {
     setShowPatterns,
     patternInfoModalOpen, 
     setPatternInfoModalOpen,
+    movingAverageInfoShown, 
+    setMovingAverageInfoShown,
+    showFlagsMovingAverage, 
+    setShowFlagsMovingAverage
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
