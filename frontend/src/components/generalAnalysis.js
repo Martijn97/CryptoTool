@@ -6,11 +6,7 @@ import {
   Typography,
   Grid,
   makeStyles,
-  MenuItem,
   Button,
-  Select,
-  InputLabel,
-  FormControl,
 } from "@material-ui/core";
 import {
   TextField,
@@ -25,8 +21,7 @@ import moment from "moment";
 import VolumeChart from "./volumeChart";
 import CandlestickChart from "./candlestickChart";
 import CandlestickPatternRecognition from "./candlestickPatternRecognition";
-import IconButton from '@mui/material/IconButton';
-import InfoIcon from '@mui/icons-material/Info';
+import MovingAverageSettings from "./movingAverageSettings";
 
 /*
 This components returns a grid of cards. In each card the Candlestick chart of a specific coin
@@ -51,13 +46,6 @@ const GeneralAnalysisPage = (props) => {
     setTrendLineExtension,
     trendLineData,
     setTrendLineData,
-    timespan,
-    setTimespan,
-    setShowMovingAverage,
-    showMovingAverage,
-    setShowFlagsMovingAverage,
-    showFlagsMovingAverage, 
-    setMovingAverageInfoShown,
     setCandlestickPatterns,
     setShowPatterns,
   } = useContext(AppContext);
@@ -237,60 +225,8 @@ const GeneralAnalysisPage = (props) => {
                       <Typography>Moving average</Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {/* The moving average card */}
-
-                      <div className={classes.accordionContent}>
-                        <Typography>Timespan:</Typography>
-                        <FormControl
-                          variant="outlined"
-                          style={{ marginTop: "10px" }}
-                        >
-                          <InputLabel id="period-select-label">
-                            Period
-                          </InputLabel>
-                          <Select
-                            id="period-select"
-                            value={timespan}
-                            label="Period (optional)"
-                            style={{ width: "200px" }}
-                            onChange={(e) => setTimespan(e.target.value)}
-                          >
-                            <MenuItem value={"day"}>Day</MenuItem>
-                            <MenuItem value={"month"}>Month</MenuItem>
-                            <MenuItem value={"year"}>Year</MenuItem>
-                          </Select>
-                          <div style={{ marginTop: "10px" }}>
-                            <Button
-                              onClick={() =>
-                                setShowMovingAverage(!showMovingAverage)
-                              }
-                              variant="contained"
-                            >
-                              {showMovingAverage ? "Hide plot" : "Show plot"}
-                            </Button>
-                            <IconButton
-                              aria-label="info"
-                              style={{ margin: "10px", marginBottom: "10px" }}
-                              onClick={() => {
-                                setMovingAverageInfoShown(true);
-                              }}
-                            >
-                              <InfoIcon />
-                            </IconButton>
-                          </div>
-                          <div style={{ marginTop: "10px" }}>
-                            <Button
-                              onClick={() =>
-                                setShowFlagsMovingAverage(!showFlagsMovingAverage)
-                              }
-                              variant="contained"
-                              disabled={!showMovingAverage}
-                            >
-                              {showFlagsMovingAverage ? "Hide intersections" : "Flag intersections"}
-                            </Button>
-                          </div>
-                        </FormControl>
-                      </div>
+                      {/* The moving average setttings card */}
+                      <MovingAverageSettings />
                     </AccordionDetails>
                   </Accordion>
                   <Accordion>

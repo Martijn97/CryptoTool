@@ -15,9 +15,13 @@ export const AppProviders = ({children}) => {
   const [trendLineData, setTrendLineData] = useState([]);
   // State that keeps the timespan for the moving average
   const [timespan, setTimespan] = useState("day");
+  // State that keeps the second timespan for the moving average
+  const [timespanTwo, setTimespanTwo] = useState("month");
   // State that returns true when the moving average must be shown or not
   const [showMovingAverage, setShowMovingAverage] = useState(false);
-  // State that returns true when the moving average must be shown or not
+  // State that returns true when the cross-over moving average must be shown or not
+  const [showCrossMovingAverage, setShowCrossMovingAverage] = useState(false);
+  // State that returns true when the candlestick patterns must be shown or not
   const [showPatterns, setShowPatterns] = useState(false);
   // State that keeps track of the found patterns
   const [candlestickPatterns, setCandlestickPatterns] = useState([]);
@@ -42,6 +46,8 @@ export const AppProviders = ({children}) => {
     setTrendLineData,
     timespan,
     setTimespan,
+    timespanTwo, 
+    setTimespanTwo,
     showMovingAverage,
     setShowMovingAverage,
     candlestickPatterns,
@@ -53,7 +59,9 @@ export const AppProviders = ({children}) => {
     movingAverageInfoShown, 
     setMovingAverageInfoShown,
     showFlagsMovingAverage, 
-    setShowFlagsMovingAverage
+    setShowFlagsMovingAverage,
+    showCrossMovingAverage, 
+    setShowCrossMovingAverage,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

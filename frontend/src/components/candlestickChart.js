@@ -13,8 +13,19 @@ const CandlestickChart = (props) => {
 
   // States from the context that contain general information. 
   // Used to communicate to the generalAnalysis component
-  const { trendLineExtension, setTrendLineExtension, trendLineData, setTrendLineData , 
-    timespan, showMovingAverage, candlestickPatterns, showPatterns, showFlagsMovingAverage } = useContext(AppContext);
+  const {
+    trendLineExtension,
+    setTrendLineExtension,
+    trendLineData,
+    setTrendLineData,
+    timespan,
+    timespanTwo,
+    showCrossMovingAverage,
+    showMovingAverage,
+    candlestickPatterns,
+    showPatterns,
+    showFlagsMovingAverage,
+  } = useContext(AppContext);
   // State used to force a re-render of the page
   const [, setRandom] = useState(Math.random());
 
@@ -166,7 +177,7 @@ const CandlestickChart = (props) => {
   };
 
   // Function that returns the data for the moving average plot
-  const movingAverageData = (ohlc_values_coin, ohlc_values_year_coin) => {
+  const movingAverageData = (ohlc_values_coin, ohlc_values_year_coin, timespanMA) => {
     // Checks if the moving average plot needs to be shown
     if (!showMovingAverage) {
       return [];
@@ -178,7 +189,7 @@ const CandlestickChart = (props) => {
     const coinClosingValues = []
 
     // Sets the timespan from string to number of days.
-    const timeMultiplication = timespan === 'day' ? 1 : timespan === 'month' ? 31 : 365;
+    const timeMultiplication = timespanMA === 'day' ? 1 : timespanMA === 'month' ? 31 : 365;
 
     ohlc_values_coin.map((i) => {
       // contains the date of the current item
@@ -216,21 +227,36 @@ const CandlestickChart = (props) => {
     }
 
     // Get the moving average data
-    const MA_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin);
+    const MA_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan);
+    // In case of cross-over, we need a second moving average
+    const MA_Two_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo);
+    
 
     // Create an empty array to store the positions of the intersections
     const topOrBottomPrice = []
     const positionIntersection = []
     
     // Check for each point if it is on top or below the moving average.
-    MA_Data.map((i, index) => {
-      if (i.y > ohlc_values_coin[index][4]) {
-        return topOrBottomPrice.push(1)
-      } else {
-        return topOrBottomPrice.push(0)
-      }
-    })
-
+    if (!showCrossMovingAverage) {
+      // The intersections between the price and moving average
+      MA_Data.map((i, index) => {
+        if (i.y > ohlc_values_coin[index][4]) {
+          return topOrBottomPrice.push(1)
+        } else {
+          return topOrBottomPrice.push(0)
+        }
+      })
+    } else {
+      // The intersections during cross-over moving average
+      MA_Data.map((i, index) => {
+        if (i.y > MA_Two_Data[index].y) {
+          return topOrBottomPrice.push(1)
+        } else {
+          return topOrBottomPrice.push(0)
+        }
+      })
+    }
+    
     // Transform the data into data that can be plotted
     topOrBottomPrice.map((i, index) => {
       if (index === 0) {
@@ -300,7 +326,15 @@ const CandlestickChart = (props) => {
         markerType: "none",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
-        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin),
+        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
+      },
+      {
+        type: "spline",
+        xValueFormatString: "DD-MM-YYYY",
+        markerType: "none",
+        toolTipContent:
+          '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
+        dataPoints: showCrossMovingAverage && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo),
       },
       {
         type: "scatter",

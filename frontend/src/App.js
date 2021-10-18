@@ -182,7 +182,7 @@ function App() {
                 <MenuItem value={14}>14</MenuItem>
                 <MenuItem value={30}>30</MenuItem>
                 <MenuItem value={90}>90</MenuItem>
-                <MenuItem value={365}>180</MenuItem>
+                <MenuItem value={365}>365</MenuItem>
                 <MenuItem value={"max"}>Max</MenuItem>
               </Select>
             </FormControl>
