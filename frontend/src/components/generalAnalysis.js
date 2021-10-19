@@ -7,12 +7,19 @@ import {
   Grid,
   makeStyles,
   Button,
+  FormControl, 
+  MenuItem, 
+  InputLabel, 
+  Select
 } from "@material-ui/core";
 import {
   TextField,
   AccordionSummary,
   AccordionDetails,
   Accordion,
+  Checkbox, 
+  FormGroup, 
+  FormControlLabel
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -22,6 +29,7 @@ import VolumeChart from "./volumeChart";
 import CandlestickChart from "./candlestickChart";
 import CandlestickPatternRecognition from "./candlestickPatternRecognition";
 import MovingAverageSettings from "./movingAverageSettings";
+import CoinComparisonDialog from "./coinComparisonDialog"
 
 /*
 This components returns a grid of cards. In each card the Candlestick chart of a specific coin
@@ -42,6 +50,7 @@ const GeneralAnalysisPage = (props) => {
   // Import multiple states from the context. Mostly used to talk to the charts.
   const {
     coinList,
+    setCoinList,
     trendLineExtension,
     setTrendLineExtension,
     trendLineData,
@@ -49,6 +58,8 @@ const GeneralAnalysisPage = (props) => {
     setCandlestickPatterns,
     setShowPatterns,
     offline,
+    setComparisonModalOpen,
+    comparisonModalOpen,
   } = useContext(AppContext);
 
   // Styling
@@ -58,13 +69,17 @@ const GeneralAnalysisPage = (props) => {
   const [random, setRandom] = useState(Math.random());
   // State that contains the data received from the API
   const [ohlc, setOHLC] = useState([{}]);
+  // State that keeps track if the analysis must be plotted in the candlestick
+  const [ plotAnalysis, setPlotAnalysis ] = useState(false)
+  // State that shows which plot must be shown in the compare dialog
+  const [ compareChart, setCompareChart] = useState('candlestick')
 
   // Repsponsible for rendering
   useEffect(() => {
     reFetch(coinList, offline);
     setCandlestickPatterns([])
     setShowPatterns(false)
-  }, [coinList, props.days, setRandom, props.currency, offline]);
+  }, [coinList, setCoinList, props.days, setRandom, props.currency, offline]);
 
   // Function with the API calls
   async function reFetch(coinList, offline) {
@@ -137,6 +152,7 @@ const GeneralAnalysisPage = (props) => {
                   ohlc={ohlc}
                   currency={current_currency()}
                   days={props.days}
+                  allowAnalysis={true}
                 />
                 {/*Calls the function to render the Volume chart*/}
                 <VolumeChart
@@ -154,6 +170,69 @@ const GeneralAnalysisPage = (props) => {
                 style={{ marginLeft: "15px" }}
               >
                 <div>
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel2a-content"
+                      id="panel2a-header"
+                    >
+                      <Typography>Compare selected coins</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <div style={{ marginBottom: 10 }}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.formControl}
+                        >
+                          <InputLabel id="currency-selectlabel">
+                            Chart
+                          </InputLabel>
+                          <Select
+                            labelId="currency-select-label"
+                            id="currency-select"
+                            value={compareChart}
+                            onChange={(e) => setCompareChart(e.target.value)}
+                            label="Currency"
+                          >
+                            <MenuItem value={'candlestick'}>
+                              Candlestick
+                            </MenuItem>
+                            <MenuItem value={'volume'}>
+                              Volume
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </div>
+                      <div style={{ marginBottom: "10px" }}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={plotAnalysis}
+                                onChange={() => setPlotAnalysis(!plotAnalysis)}
+                              />
+                            }
+                            label="Plot analysis in charts"
+                          />
+                        </FormGroup>
+                      </div>
+                      {/* The coin comparison card */}
+                      {coinList.length < 2 && (
+                        <>
+                          <Typography style={{ marginBottom: "10px" }}>
+                            Need two coins to do a comparison{" "}
+                          </Typography>
+                        </>
+                      )}
+                      <Button
+                        onClick={() => setComparisonModalOpen(true)}
+                        variant="contained"
+                        disabled={coinList.length < 2}
+                      >
+                        Show comparison
+                      </Button>
+                    </AccordionDetails>
+                  </Accordion>
                   <Accordion>
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -259,7 +338,20 @@ const GeneralAnalysisPage = (props) => {
     return renderCoinCard;
   };
 
-  return renderCoinCards(ohlc);
+  return (
+    <>
+      {renderCoinCards(ohlc)}
+      <CoinComparisonDialog
+        compareModalOpen={comparisonModalOpen}
+        onCloseCompareModal={() => setComparisonModalOpen(false)}
+        ohlc={ohlc}
+        currency={current_currency()}
+        days={props.days}
+        allowAnalysis={plotAnalysis}
+        type={compareChart}
+      />
+    </>
+  );
 };
 
 export default GeneralAnalysisPage;

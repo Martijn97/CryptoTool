@@ -9,6 +9,8 @@ export const AppProviders = ({children}) => {
   const [coinManagerOpen, setCoinManagerOpen] = useState(false);
   // State that returns true when the info Dialog must be shown or not
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  // State that returns true when the comparison Dialog must be shown or not
+  const [comparisonModalOpen, setComparisonModalOpen] = useState(false);
   // State that contains the crypto coins selected by the user
   const [coinList, setCoinList] = useState([]);
   // State that keeps track of the extension of the trendline.
@@ -42,6 +44,8 @@ export const AppProviders = ({children}) => {
     setCoinManagerOpen,
     infoModalOpen,
     setInfoModalOpen,
+    comparisonModalOpen, 
+    setComparisonModalOpen,
     coinList,
     setCoinList,
     trendLineExtension,

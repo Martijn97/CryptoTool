@@ -46,7 +46,7 @@ function App() {
   const [days, setDays] = useState(7);
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
-  const { coinList, setCoinManagerOpen, coinManagerOpen, offline, setOffline } = useContext(AppContext)
+  const { setCoinList, coinList, setCoinManagerOpen, coinManagerOpen, offline, setOffline } = useContext(AppContext)
 
   // represents if the API is online or not
   const live = (status.gecko_says === '(V3) To the Moon!'? true : false)
@@ -54,7 +54,7 @@ function App() {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch();
-  }, [offline]);
+  }, [offline, setCoinList, coinList, random]);
 
   // Retrieves the data of the status of the API
   async function reFetch() {
@@ -66,14 +66,14 @@ function App() {
   }
 
   // Repsponsible for rerendering
-  const reRender = (e) => {
+  const reRender = () => {
     const trigger = true
     reFetch();
     setRandom(Math.random());
     return trigger;
   };
 
-  // Explenation of selecting coins when the coinsList is empty
+  // Explanation of selecting coins when the coinsList is empty
   const explainCoinSelection = () => {
     return (
       <>
@@ -119,7 +119,7 @@ function App() {
                 onClick={() => {
                   coinList.length < 2 && setCoinManagerOpen(true);
                 }}
-                disabled={coinList.length >= 2}
+                //disabled={coinList.length >= 2}
                 variant="contained"
               >
                 Select coins

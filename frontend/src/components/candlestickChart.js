@@ -10,6 +10,8 @@ const CandlestickChart = (props) => {
   const name = props.name;
   const ohlc = props.ohlc;
   const currency = props.currency;
+  // true if the analysis must be shown in the candlestck plot
+  const allowAnalysis = props.allowAnalysis;
 
   // States from the context that contain general information. 
   // Used to communicate to the generalAnalysis component
@@ -318,7 +320,7 @@ const CandlestickChart = (props) => {
         type: "line",
         color: "black",
         lineThickness: 3,
-        dataPoints: trendLineChartData(trendLineData),
+        dataPoints: allowAnalysis && trendLineChartData(trendLineData),
       },
       {
         type: "spline",
@@ -326,7 +328,7 @@ const CandlestickChart = (props) => {
         markerType: "none",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
-        dataPoints: movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
+        dataPoints: allowAnalysis && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
       },
       {
         type: "spline",
@@ -334,7 +336,7 @@ const CandlestickChart = (props) => {
         markerType: "none",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
-        dataPoints: showCrossMovingAverage && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo),
+        dataPoints: allowAnalysis && showCrossMovingAverage && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo),
       },
       {
         type: "scatter",
@@ -345,7 +347,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[0]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[0]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -356,7 +358,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[1]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[1]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -367,7 +369,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[2]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[2]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -378,7 +380,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[3]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -389,7 +391,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[3]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -400,7 +402,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[5]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[5]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -411,7 +413,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: showPatterns ? pattern_data[6]?.data[0] : [],
+        dataPoints: allowAnalysis && showPatterns ? pattern_data[6]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -422,7 +424,7 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Moving average intersection</span><br>Date: {x}',
-        dataPoints: movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
+        dataPoints: allowAnalysis && movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
       },
     ],
   };
