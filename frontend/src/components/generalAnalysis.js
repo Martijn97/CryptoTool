@@ -48,6 +48,7 @@ const GeneralAnalysisPage = (props) => {
     setTrendLineData,
     setCandlestickPatterns,
     setShowPatterns,
+    offline,
   } = useContext(AppContext);
 
   // Styling
@@ -60,18 +61,19 @@ const GeneralAnalysisPage = (props) => {
 
   // Repsponsible for rendering
   useEffect(() => {
-    reFetch(coinList);
+    reFetch(coinList, offline);
     setCandlestickPatterns([])
     setShowPatterns(false)
-  }, [coinList, props.days, setRandom, props.currency]);
+  }, [coinList, props.days, setRandom, props.currency, offline]);
 
   // Function with the API calls
-  async function reFetch(coinList) {
+  async function reFetch(coinList, offline) {
     axios
       .get("/OHLC_data", {
         params: {
           coins: coinList,
           days: props.days,
+          offline: offline,
         },
         type: "GET",
       })

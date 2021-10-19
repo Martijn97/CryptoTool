@@ -15,19 +15,22 @@ import axios from "axios";
 // Dialog on the overview page. Appears when the users presses the select coins button.
 const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
   // Global states from the context
-  const { coinList, setCoinList } = useContext(AppContext);
+  const { setCoinList, offline } = useContext(AppContext);
   // State that keeps the data from the API
   const [ coinSelection, setCoinSelection ] = useState();
 
   // Repsponsible for rendering
   useEffect(() => {
-    reFetch();
-  }, []);
+    reFetch(offline);
+  }, [offline]);
 
   // Retrieves the data of the overview page
-  async function reFetch() {
+  async function reFetch(offline) {
     axios
       .get("/coin_selection_data", {
+        params: {
+          offline: offline,
+        },
         type: "GET",
       })
       .then((data) => {

@@ -3,6 +3,8 @@ import { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 export const AppProviders = ({children}) => {
+  // State that keeps track if the tool is in offline mode
+  const [offline, setOffline] = useState(false)
   // State that returns true when the coin selector Dialog must be shown or not
   const [coinManagerOpen, setCoinManagerOpen] = useState(false);
   // State that returns true when the info Dialog must be shown or not
@@ -34,6 +36,8 @@ export const AppProviders = ({children}) => {
   
   // All the values to be returned by the AppContext.
   const value = {
+    offline,
+    setOffline,
     coinManagerOpen,
     setCoinManagerOpen,
     infoModalOpen,

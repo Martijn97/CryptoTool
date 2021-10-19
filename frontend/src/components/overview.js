@@ -34,19 +34,21 @@ const OverviewPage = (props) => {
     setPatternInfoModalOpen,
     movingAverageInfoShown, 
     setMovingAverageInfoShown,
+    offline,
   } = useContext(AppContext);
 
   // Repsponsible for rendering
   useEffect(() => {
-    reFetch(coinList);
-  }, [props.refresh, random, coinList, setCoinList]);
+    reFetch(coinList, offline);
+  }, [props.refresh, random, coinList, setCoinList, offline]);
 
   // Retrieves the data of the overview page
-  async function reFetch(coinList) {
+  async function reFetch(coinList, offline) {
     axios
       .get("/coin_info_list", {
         params: {
           coins: coinList,
+          offline: offline,
         },
         type: "GET",
       })
@@ -57,6 +59,7 @@ const OverviewPage = (props) => {
       .get("/current_value_list", {
         params: {
           coins: coinList,
+          offline: offline,
         },
         type: "GET",
       })
@@ -95,6 +98,13 @@ const OverviewPage = (props) => {
         path: "$.[" + result_name[i] + "].[image].*",
         json: coin_info,
       });
+
+      // This if statement cancels the card if the coin is not included in coinList
+      // but it is returned by the API call. Often, this only occurs if the tool is
+      // in offline mode.
+      if (!coinList.includes(result_name[i])) {
+        return (null);
+      }
 
       // Returns a single card for a crypto coin with its information.
       return (

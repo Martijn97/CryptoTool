@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Drawer, makeStyles, Button, Typography, Grid, AppBar, Toolbar, 
   FormControl, Chip, MenuItem, InputLabel, Select} from "@material-ui/core";
+import { Checkbox, FormGroup, FormControlLabel } from "@mui/material";
 import OverviewPage from "./components/overview";
 import GeneralAnalysisPage from "./components/generalAnalysis"
 import { AppContext } from './context/AppContext';
@@ -45,7 +46,7 @@ function App() {
   const [days, setDays] = useState(7);
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
-  const { coinList, setCoinManagerOpen, coinManagerOpen } = useContext(AppContext)
+  const { coinList, setCoinManagerOpen, coinManagerOpen, offline, setOffline } = useContext(AppContext)
 
   // represents if the API is online or not
   const live = (status.gecko_says === '(V3) To the Moon!'? true : false)
@@ -53,7 +54,7 @@ function App() {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch();
-  }, []);
+  }, [offline]);
 
   // Retrieves the data of the status of the API
   async function reFetch() {
@@ -116,9 +117,9 @@ function App() {
               <Typography variant="subtitle1">Settings:</Typography>
               <Button
                 onClick={() => {
-                  coinList.length < 2
-                    && setCoinManagerOpen(true);
+                  coinList.length < 2 && setCoinManagerOpen(true);
                 }}
+                disabled={coinList.length >= 2}
                 variant="contained"
               >
                 Select coins
@@ -194,9 +195,34 @@ function App() {
           justifyContent="center"
           alignItems="flex-end"
         >
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={offline}
+                  onChange={() => setOffline(!offline)}
+                />
+              }
+              label="Offline-mode"
+            />
+          </FormGroup>
+        </Grid>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-end"
+        >
           <div>
             <Typography variant="subtitle1">Status GeckoAPI:</Typography>
-            {live ? (
+            {offline ? (
+              <Chip
+                variant="outlined"
+                color="success"
+                size="small"
+                label="Offline mode"
+              />
+            ) : live ? (
               <Chip
                 variant="outlined"
                 color="primary"
@@ -208,7 +234,7 @@ function App() {
                 variant="outlined"
                 color="secondary"
                 size="small"
-                label="Offline"
+                label="Not live"
               />
             )}
           </div>
@@ -233,7 +259,7 @@ function App() {
         </div>
 
         <div style={{ marginTop: "75px" }}>
-            <GeneralAnalysisPage currency={currency} days={days} />
+          <GeneralAnalysisPage currency={currency} days={days} />
         </div>
       </main>
     </div>
