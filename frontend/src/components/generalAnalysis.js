@@ -7,19 +7,22 @@ import {
   Grid,
   makeStyles,
   Button,
-  FormControl, 
-  MenuItem, 
-  InputLabel, 
-  Select
+  FormControl,
+  MenuItem,
+  InputLabel,
+  Select,
 } from "@material-ui/core";
+import MuiAlert from '@mui/material/Alert';
 import {
   TextField,
   AccordionSummary,
   AccordionDetails,
   Accordion,
-  Checkbox, 
-  FormGroup, 
-  FormControlLabel
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  IconButton,
+  Snackbar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -29,7 +32,9 @@ import VolumeChart from "./volumeChart";
 import CandlestickChart from "./candlestickChart";
 import CandlestickPatternRecognition from "./candlestickPatternRecognition";
 import MovingAverageSettings from "./movingAverageSettings";
-import CoinComparisonDialog from "./coinComparisonDialog"
+import CoinComparisonDialog from "./coinComparisonDialog";
+import InfoIcon from "@mui/icons-material/Info";
+import ObvIndicatorChart from "./obvIndicatorChart";
 
 /*
 This components returns a grid of cards. In each card the Candlestick chart of a specific coin
@@ -60,6 +65,8 @@ const GeneralAnalysisPage = (props) => {
     offline,
     setComparisonModalOpen,
     comparisonModalOpen,
+    showObvChart,
+    setShowObvChart,
   } = useContext(AppContext);
 
   // Styling
@@ -70,15 +77,18 @@ const GeneralAnalysisPage = (props) => {
   // State that contains the data received from the API
   const [ohlc, setOHLC] = useState([{}]);
   // State that keeps track if the analysis must be plotted in the candlestick
-  const [ plotAnalysis, setPlotAnalysis ] = useState(false)
+  const [plotAnalysis, setPlotAnalysis] = useState(false);
   // State that shows which plot must be shown in the compare dialog
-  const [ compareChart, setCompareChart] = useState('candlestick')
+  const [compareChart, setCompareChart] = useState("candlestick");
+  // State that keeps track of the snackbar about the loading time OBV
+  const [snackOpen, setSnackOpen] = React.useState(false);
 
   // Repsponsible for rendering
   useEffect(() => {
+    setShowObvChart(false);
     reFetch(coinList, offline);
-    setCandlestickPatterns([])
-    setShowPatterns(false)
+    setCandlestickPatterns([]);
+    setShowPatterns(false);
   }, [coinList, setCoinList, props.days, setRandom, props.currency, offline]);
 
   // Function with the API calls
@@ -120,6 +130,20 @@ const GeneralAnalysisPage = (props) => {
     setRandom(Math.random());
   }
 
+  // Used by the snackbar to warn the user about the loading time
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  // Close function of the snackbar component
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
   // This renders the cards for each coin. It contains the Candlestick chart of the coin.
   const renderCoinCards = (ohlc) => {
     const renderCoinCard = coinList.map((name, i) => {
@@ -160,6 +184,14 @@ const GeneralAnalysisPage = (props) => {
                   ohlc={ohlc}
                   currency={current_currency()}
                 />
+                {/* Calls the component that contains the OBV indicator chart */}
+                {showObvChart && (
+                  <ObvIndicatorChart
+                    name={name}
+                    days={props.days}
+                    currency={current_currency()}
+                  />
+                )}
               </Grid>
               <Grid
                 item
@@ -194,12 +226,10 @@ const GeneralAnalysisPage = (props) => {
                             onChange={(e) => setCompareChart(e.target.value)}
                             label="Currency"
                           >
-                            <MenuItem value={'candlestick'}>
+                            <MenuItem value={"candlestick"}>
                               Candlestick
                             </MenuItem>
-                            <MenuItem value={'volume'}>
-                              Volume
-                            </MenuItem>
+                            <MenuItem value={"volume"}>Volume</MenuItem>
                           </Select>
                         </FormControl>
                       </div>
@@ -327,6 +357,44 @@ const GeneralAnalysisPage = (props) => {
                       />
                     </AccordionDetails>
                   </Accordion>
+                  <Accordion>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel2a-content"
+                      id="panel2a-header"
+                    >
+                      <Typography>On-Balance Volume Indicator</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      {/* The OBV indicator card */}
+                      <Button
+                        onClick={() => {
+                          setShowObvChart(!showObvChart);
+                          if (showObvChart === false) {
+                            setSnackOpen(true);
+                          }
+                        }}
+                        variant="contained"
+                        style={{ marginBottom: "15px" }}
+                      >
+                        {showObvChart ? "Hide plot" : "Show plot"}
+                      </Button>
+                      <Typography>
+                        The OBV indicator will be shown in a chart below the
+                        volume plot. More info:
+                      </Typography>
+                      {/* Button that opens an info dialog */}
+                      <IconButton
+                        aria-label="info"
+                        style={{ marginTop: "10px" }}
+                        onClick={() => {
+                          console.log("click");
+                        }}
+                      >
+                        <InfoIcon />
+                      </IconButton>
+                    </AccordionDetails>
+                  </Accordion>
                 </div>
               </Grid>
             </Grid>
@@ -350,6 +418,19 @@ const GeneralAnalysisPage = (props) => {
         allowAnalysis={plotAnalysis}
         type={compareChart}
       />
+      <Snackbar
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        open={snackOpen}
+        autoHideDuration={600}
+        onClose={handleClose}
+      >
+        <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
+          Loading.... This may take a few seconds
+        </Alert>
+      </Snackbar>
     </>
   );
 };

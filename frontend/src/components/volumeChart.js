@@ -40,7 +40,7 @@ const VolumeChart = (props) => {
     axisY: {
       includeZero: false,
     },
-    height: 200,
+    height: 150,
     data: [
       {
         type: "column",
