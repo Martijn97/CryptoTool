@@ -67,6 +67,7 @@ const GeneralAnalysisPage = (props) => {
     comparisonModalOpen,
     showObvChart,
     setShowObvChart,
+    setObvInfoShown,
   } = useContext(AppContext);
 
   // Styling
@@ -388,7 +389,7 @@ const GeneralAnalysisPage = (props) => {
                         aria-label="info"
                         style={{ marginTop: "10px" }}
                         onClick={() => {
-                          console.log("click");
+                          setObvInfoShown(true)
                         }}
                       >
                         <InfoIcon />

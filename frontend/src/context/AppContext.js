@@ -35,8 +35,10 @@ export const AppProviders = ({children}) => {
   const [movingAverageInfoShown, setMovingAverageInfoShown] = useState(false);
   // State that returns true when the moving average must be shown or not
   const [showFlagsMovingAverage, setShowFlagsMovingAverage] = useState(false);
-  //State that keeps track if the OBV chart must be shown or not
+  // State that keeps track if the OBV chart must be shown or not
   const [ showObvChart, setShowObvChart ] = useState(false)
+  // State that returns if the OBV info modal must be shown or not
+  const [obvInfoShown, setObvInfoShown ] = useState(false)
   
   // All the values to be returned by the AppContext.
   const value = {
@@ -74,6 +76,8 @@ export const AppProviders = ({children}) => {
     setShowCrossMovingAverage,
     showObvChart, 
     setShowObvChart,
+    obvInfoShown, 
+    setObvInfoShown,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

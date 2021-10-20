@@ -1,6 +1,12 @@
-import React from 'react';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, 
-    DialogTitle } from "@material-ui/core";
+import React from "react";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@material-ui/core";
 
 const CoinInfoModal = ({ infoModalOpen, onCloseInfoModel, data }) => {
   // Appearence of the info Dialog, will be returned below.

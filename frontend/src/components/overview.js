@@ -5,6 +5,7 @@ import CoinSelector from './coinSelect.js'
 import CoinInfoModal from "./coinInfo.js";
 import MovingAverageInfo from "./movingAverageInfo.js";
 import PatternInfoModal from "./patternInfo"
+import ObvInfoDialog from "./obvInfoDialog.js";
 import { AppContext } from '../context/AppContext';
 import axios from "axios";
 
@@ -34,6 +35,8 @@ const OverviewPage = (props) => {
     setPatternInfoModalOpen,
     movingAverageInfoShown, 
     setMovingAverageInfoShown,
+    obvInfoShown, 
+    setObvInfoShown,
     offline,
   } = useContext(AppContext);
 
@@ -205,6 +208,10 @@ const OverviewPage = (props) => {
       <MovingAverageInfo 
         movingAverageInfoOpen={movingAverageInfoShown}
         onClosemovingAverageInfo={() => setMovingAverageInfoShown(false)}
+      />
+      <ObvInfoDialog 
+        obvInfoDialogOpen={obvInfoShown}
+        onCloseObvInfoDialog={() => setObvInfoShown(false)}
       />
     </>
   );
