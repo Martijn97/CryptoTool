@@ -16,63 +16,113 @@ import Typography from "@mui/material/Typography";
 const pattern_info = [
   {
     name: "Bullish Kicker",
-    info: "A bullish kicker is a candlestick pattern that’s often formed after a significant downtrend, but could also form after an uptrend. In short, a bullish kicker consists of a large bullish candlestick, "
-    + "that’s preceded by a gap to the upside and a bearish candle. If we spot a bullish kicker after an uptrend, that could be a sign that the market still has enough strength to continue the uptrend."
-    + "However, if the pattern occurs after a downtrend, it instead might be a sign that the market has gone too far, and is about to revert. "
-    + "The Bullish Kicker Candlestick pattern's reliability is high when it is formed at the downtrend or formed in an underbought area.",
+    info: (
+      <Typography>
+        A bullish kicker occurs often after a large downtrend or uptrend. The
+        pattern consists of a stretched candlestick and a large gap to the
+        upside. The candlestick preceding the bullish kicked is one with a
+        bearish kicker pattern. A bullish kicker after an uptrend can be a sign
+        that the market can continue with the upward trend for a while. However,
+        in the case of a downward trend, it may be an early sign that the price
+        will probably decrease soon. The reliability of the bullish kicker is
+        higher when it is formed at the downtrend or formed in an underbought
+        area.
+      </Typography>
+    ),
     image:
       "https://tradingsim.com/wp-content/uploads/2016/09/bulish-kicker-pattern.png",
   },
   {
     name: "Bearish Kicker",
-    info: "A bearish kicker is a candlestick pattern that consists of two candles, and that’s believed to signal a coming swing to the downside. A bearish kicker can be formed in an uptrend or downtrend, and is made up of a bearish candle that’s preceded by a gap to the downside and bullish candle."
-    + "A bearish kicker that’s formed after an uptrend, could be seen as a form of reversal pattern. It tells us that the market is likely to have reached its summit for this time, and is headed for a fall. "
-    + "In contrast, a bearish kicker that forms after a downtrend instead becomes a sort of continuation pattern. It tells us that the current downtrend most likely isn’t over, and that we could expect the market to perform new lows soon."
-    + "The Bearish Kicker Candlestick pattern's reliability is high when it is formed at the uptrend or formed in an overbought area.",
+    info: (
+      <Typography>
+        The bearish kicker pattern consists of a stretched candlestick and is
+        often preceded by a large downtrend. A bearish kicker can be seen as a
+        reversal pattern since it flags a large downtrend after a period of an
+        increasing price. However, a bearish kicker can also occur in a
+        downtrend in which it means that the downward trend is still going on
+        and the price will get lower. The reliability of the bearish kicker is
+        higher when it is formed at the uptrend or formed in an overbought area.
+      </Typography>
+    ),
     image:
       "https://tradingsim.com/wp-content/uploads/2016/09/bearish-kicker-pattern.png",
   },
   {
     name: "Bullish Engulfing",
-    info:
-      "The bullish engulfing pattern is formed of two candlesticks. The first candle is a short red body that is completely engulfed by a larger green candle." +
-      "Though the second day opens lower than the first, the bullish market pushes the price up, culminating in an obvious win for buyers.",
+    info: (
+      <Typography>
+        The bullish engulfing pattern consists of two candlesticks. The first
+        candlestick is a short red one and the second a larger green
+        candlestick. The body of the red candlestick fits entirely in the green
+        larger candlestick. So, the second candlestick has a larger open and
+        close value then the first candlestick. This pattern is an early sign
+        that the price is increasing.
+      </Typography>
+    ),
     image:
       "https://a.c-dn.net/c/content/dam/publicsites/igcom/uk/images/ContentImage/bullish-engulfing.png",
   },
   {
     name: "Bearish Engulfing",
-    info:
-      "A bearish engulfing pattern occurs at the end of an uptrend. The first candle has a small green body that is engulfed by a subsequent long red candle." +
-      "It signifies a peak or slowdown of price movement, and is a sign of an impending market downturn. The lower the second candle goes, the more significant the trend is likely to be.",
+    info: (
+      <Typography>
+        The bearish engulfing pattern consists of two candlesticks. The first
+        candlestick is a short green one and the second a larger red
+        candlestick. The body of the green candlestick fits entirely in the red
+        larger candlestick. The pattern occurs after an uptrend and gives an
+        early sign that a peak or slowdown of the price increasement is comming
+        up.
+      </Typography>
+    ),
     image:
       "https://a.c-dn.net/c/content/dam/publicsites/igcom/uk/images/ContentImage/bearish-engulfing.png",
   },
   {
     name: "Bullish Harami",
-    info:
-      "A bullish harami is a candlestick pattern that indicates a bottom when it is preceded by a fall. It is a two-candle bullish reversal pattern." +
-      "The first candle has a relatively large red body (bearish) and the second one has a smaller white body (bullish) that’s contained within the body of the first candle." +
-      "This is also known as an 'inside day' pattern. The upper and lower shadow lines of the second candle are short and should also fall within the body of the first candle." +
-      "Just like the Bullish Engulfing Pattern, a Bullish Harami pattern is a reversal pattern. It is an indication that the current existing downward trend (short or long term) is coming to an end and a positive trend reversal is imminent.",
+    info: (
+      <Typography>
+        The bullish harami pattern indicates a bottom when the candlestick
+        before the pattern are in a decreasing trend. The first candle has a
+        large stretched red body and the second one has a smaller compact green
+        body. The body of the second candlestick fits the first candlestick. The
+        high and low values of the second candlestick are close to the open and
+        close values of the candlestick. Often, the high and low value of the
+        second candlestick fit the first candlestick. The bullish harami indicates that
+        the current existing downwards trend ends soon.
+      </Typography>
+    ),
     image:
       "https://www.chartmill.com/images/uploads/d8e7a5413a524316bd1de53559a7892b.png",
   },
   {
     name: "Bearish Harami",
-    info:
-      "A Bearish Harami Candlestick Pattern is a pattern that indicates a top when it is preceded by a price increase. It is a two-candle bearish reversal pattern." +
-      "The first candle has a relatively large green body (bullish) and the second one has a smaller red body (bearish) that’s contained within the body of the first candle." +
-      "This is also known as an 'inside day' pattern. The upper and lower shadow lines of the second candle are short and should also fall within the body of the first candle." +
-      "Just like the Bullish Harami pattern, a Bearish Harami pattern is a reversal pattern. It is an indication that the current existing upward trend (short or long term) is coming to an end and a negative trend reversal is imminent.",
+    info: (
+      <Typography>
+        The bearish harami pattern indicates a top when the candlesticks before
+        the pattern are in an increasing trend. The first candle has a large
+        stretched green body and the second one has a smaller compact. The body
+        of the second candlestick fits in the body of the first candlestick. The
+        high and low values of the second candlestick are close to the open and
+        close values of the candlestick. Often, the high and low value of the
+        second candlestick fit the first candlestick. The bearish harami indicates that
+        the current existing upward trend ends soon.
+      </Typography>
+    ),
     image:
       "https://www.chartmill.com/images/uploads/aa992e273a824321a79c209a58ff83fe.png",
   },
   {
     name: "Shooting star",
-    info:
-      "The shooting star is the same shape as the inverted hammer, but is formed in an uptrend: it has a small lower body, and a long upper wick." +
-      "Usually, the market will gap slightly higher on opening and rally to an intra-day high before closing at a price just above the open – like a star falling to the ground.",
+    info: (
+      <Typography>
+        The shooting star candlestick has a small lower body, and a high value
+        far from the open/close value of the candlestick. So, the open and close
+        values are close to each other. Usually, the pattern indicates that the
+        top is reached. If the pattern occurs after a couple of rising
+        candlestick, it may indicate that people start selling.
+      </Typography>
+    ),
     image:
       "https://a.c-dn.net/c/content/dam/publicsites/igcom/uk/images/ContentImage/shooting-star.png",
   },
@@ -95,16 +145,25 @@ const PatternInfoModal = (patternInfoModalOpen) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
+            <Typography style={{ marginBottom: "20px" }}>
+              Candlesticks are red and green bars that contain the open, close,
+              high and low value of a coin at a specific time. A candlestick
+              chart is shown in the tool. Some combinations of open, close, high
+              and low values are special and can be a first sign of an
+              increasing or decreasing price. The same holds for specific
+              sequences of candlesticks. These special sequences or combinations
+              are called candlestick patterns.
+            </Typography>
+            <Typography style={{ marginBottom: "5px" }}>
+              The seven candlestick patterns recognized by the tool are the
+              following:
+            </Typography>
             <Grid container justifyContent="left">
               {pattern_info.map((i) => {
                 return (
-                  <Grid item xs={6} style={{marginTop: "15px"}}>
-                    <Card sx={{ maxWidth: 450, minHeight: "650px"}}>
-                      <CardMedia
-                        component="img"
-                        height="300"
-                        image={i.image}
-                      />
+                  <Grid item xs={6} style={{ marginTop: "15px" }}>
+                    <Card sx={{ maxWidth: 450, minHeight: "650px" }}>
+                      <CardMedia component="img" height="300" image={i.image} />
                       <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
                           {i.name}

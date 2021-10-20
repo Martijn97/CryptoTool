@@ -380,20 +380,20 @@ const GeneralAnalysisPage = (props) => {
                       >
                         {showObvChart ? "Hide plot" : "Show plot"}
                       </Button>
-                      <Typography>
-                        The OBV indicator will be shown in a chart below the
-                        volume plot. More info:
-                      </Typography>
                       {/* Button that opens an info dialog */}
                       <IconButton
                         aria-label="info"
-                        style={{ marginTop: "10px" }}
+                        style={{ margin: "10px", marginBottom: "20px" }}
                         onClick={() => {
                           setObvInfoShown(true)
                         }}
                       >
                         <InfoIcon />
                       </IconButton>
+                      <Typography>
+                        The OBV indicator will be shown in a chart below the
+                        volume plot.
+                      </Typography>
                     </AccordionDetails>
                   </Accordion>
                 </div>

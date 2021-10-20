@@ -45,7 +45,7 @@ const VolumeChart = (props) => {
       {
         type: "column",
         showInLegend: false,
-        name: name + " volume",
+        name: "Volume " + name,
         color: "grey",
         yValueFormatString: "###0",
         xValueFormatString: "DD-MM-YYYY",

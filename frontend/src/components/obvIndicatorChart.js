@@ -4,18 +4,17 @@ import { JSONPath } from "jsonpath-plus";
 import { AppContext } from "./../context/AppContext";
 import axios from "axios";
 import { Grid } from "@material-ui/core";
-import moment from "moment";
 
 const ObvIndicatorChart = ({ name, days, currency }) => {
   // States from the context
-  const { coinList, offline } = useContext(AppContext);
+  const { coinList, offline, showObvChart } = useContext(AppContext);
   // State that holds the data
   const [data, setData] = useState([]);
 
   // Repsponsible for rendering
   useEffect(() => {
     reFetch(coinList, offline);
-  });
+  }, [showObvChart]);
 
   // Function with the API calls
   async function reFetch(coinList, offline) {
@@ -94,6 +93,8 @@ const ObvIndicatorChart = ({ name, days, currency }) => {
         type: "area",
         color: "#4d4dff",
         lineThickness: 3,
+        toolTipContent:
+          '<span style="color:#4d4dff ">On-Balanced Volume</span><br>Value: {y}<br>Date: {x}',
         dataPoints: obv_plot_data(volume_values_coin, ohlc_values_coin),
       },
     ],

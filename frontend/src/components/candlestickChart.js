@@ -301,7 +301,7 @@ const CandlestickChart = (props) => {
       {
         type: "candlestick",
         showInLegend: false,
-        name: name,
+        name: "Price " + name,
         risingColor: "#4ca64c",
         fallingColor: "#ff4c4c",
         yValueFormatString: currency === "eur" ? "€ ###0.00" : currency === "usd" ? "$ ###0.00" : "£ ###0.00",
@@ -323,9 +323,21 @@ const CandlestickChart = (props) => {
         dataPoints: allowAnalysis && trendLineChartData(trendLineData),
       },
       {
+        type: "scatter",
+        name: "Moving Average Intersection",
+        markerType: "cross",
+        markerColor: "#001123",
+        markerSize: 20,
+        xValueFormatString: "DD-MM-YYYY",
+        toolTipContent:
+          '<span style="color:#001123 ">Moving average intersection</span><br>Date: {x}',
+        dataPoints: allowAnalysis && movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
+      },
+      {
         type: "spline",
         xValueFormatString: "DD-MM-YYYY",
         markerType: "none",
+        color: "#007bb8",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
         dataPoints: allowAnalysis && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
@@ -334,6 +346,7 @@ const CandlestickChart = (props) => {
         type: "spline",
         xValueFormatString: "DD-MM-YYYY",
         markerType: "none",
+        color: "#40e0d0",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
         dataPoints: allowAnalysis && showCrossMovingAverage && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo),
@@ -414,17 +427,6 @@ const CandlestickChart = (props) => {
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
         dataPoints: allowAnalysis && showPatterns ? pattern_data[6]?.data[0] : [],
-      },
-      {
-        type: "scatter",
-        name: "Moving Average Intersection",
-        markerType: "circle",
-        markerColor: "#FFFF00",
-        markerSize: 10,
-        xValueFormatString: "DD-MM-YYYY",
-        toolTipContent:
-          '<span style="color:#cd00cd ">Moving average intersection</span><br>Date: {x}',
-        dataPoints: allowAnalysis && movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
       },
     ],
   };

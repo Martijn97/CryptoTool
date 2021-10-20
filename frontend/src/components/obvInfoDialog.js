@@ -20,11 +20,11 @@ const ObvInfoDialog = ({ obvInfoDialogOpen, onCloseObvInfoDialog }) => {
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">
-          On-Balance Volume Indicator information
+          On-Balance Volume Indicator Information
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Typography variant="h5">General</Typography>
+            <Typography variant="h5" style={{ marginBottom: "5px" }}>General</Typography>
             <Typography style={{ marginBottom: "20px" }}>
               The on-balanced volume indicator (OBV) is the plot shown below the
               volume plot. The chart is based on the values of the volume plot
@@ -50,7 +50,7 @@ const ObvInfoDialog = ({ obvInfoDialogOpen, onCloseObvInfoDialog }) => {
               </Typography>
               <Typography>OBV = OBV yesterday</Typography>
             </Typography>
-            <Typography variant="h5">Intepretation</Typography>
+            <Typography variant="h5" style={{ marginBottom: "5px" }}>Intepretation</Typography>
             <Typography style={{ marginBottom: "20px" }}>
               The OBV precedes price. An increasing OBV reflects a positive
               volume pressure that can lead to a higher price. An decreasing OBV
