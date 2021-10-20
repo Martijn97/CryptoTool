@@ -15,7 +15,7 @@ const ObvIndicatorChart = ({ name, days, currency }) => {
   // Repsponsible for rendering
   useEffect(() => {
     reFetch(coinList, offline);
-  }, []);
+  });
 
   // Function with the API calls
   async function reFetch(coinList, offline) {
@@ -52,19 +52,12 @@ const ObvIndicatorChart = ({ name, days, currency }) => {
     const obv_data = [];
 
     // Loop over all the datapoints in the timespan max
-    volume_values_coin?.map((item) => {
-      const closestDates = [];
-
-      // compare the volume dates to the price dates to find the closest combination of volume and price
-      ohlc_values_coin.map((i) => {
-        return closestDates.push(Math.abs(moment(i[0]).diff(moment(item[0]))));
-      });
-
-      // Get the index of the closest combination
-      const min = closestDates.indexOf(Math.min.apply(Math, closestDates));
-
+    volume_values_coin?.map((item, index) => {
       // Decide if the price increased or not. Depending on this add or subtract the volume
-      if (ohlc_values_coin[min][1] < ohlc_values_coin[min][4]) {
+      if (
+        ohlc_values_coin[Math.floor(index / 4)][1] <
+        ohlc_values_coin[Math.floor(index / 4)][4]
+      ) {
         total = total + item[1];
       } else {
         total = total - item[1];
