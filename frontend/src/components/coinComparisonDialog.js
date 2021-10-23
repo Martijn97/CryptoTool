@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { AppContext } from "./../context/AppContext";
 import CandlestickChart from "./candlestickChart";
 import VolumeChart from "./volumeChart";
+import ShapeChart from "./shapeChart";
 import {
   Button,
   Dialog,
@@ -60,17 +61,14 @@ const CoinComparisonDialog = ({
           {type === "volume" && (
             <DialogContentText>
               {/* volume of first coin */}
-              <VolumeChart
-                  name={coinList[0]}
-                  ohlc={ohlc}
-                  currency={currency}
-                />
+              <VolumeChart name={coinList[0]} ohlc={ohlc} currency={currency} />
               {/* volume of second coin */}
-              <VolumeChart
-                  name={coinList[1]}
-                  ohlc={ohlc}
-                  currency={currency}
-                />
+              <VolumeChart name={coinList[1]} ohlc={ohlc} currency={currency} />
+            </DialogContentText>
+          )}
+          {type === "relative" && (
+            <DialogContentText>
+              <ShapeChart name={coinList} data={ohlc} currency={currency} />
             </DialogContentText>
           )}
         </DialogContent>

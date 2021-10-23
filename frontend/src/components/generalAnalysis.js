@@ -228,6 +228,9 @@ const GeneralAnalysisPage = (props) => {
                             onChange={(e) => setCompareChart(e.target.value)}
                             label="Currency"
                           >
+                            <MenuItem value={"relative"}>
+                              Relative Growth
+                            </MenuItem>
                             <MenuItem value={"candlestick"}>
                               Candlestick
                             </MenuItem>
