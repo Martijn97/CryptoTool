@@ -38,7 +38,9 @@ export const AppProviders = ({children}) => {
   // State that keeps track if the OBV chart must be shown or not
   const [ showObvChart, setShowObvChart ] = useState(false)
   // State that returns if the OBV info modal must be shown or not
-  const [obvInfoShown, setObvInfoShown ] = useState(false)
+  const [ obvInfoShown, setObvInfoShown ] = useState(false)
+  // State that knows if the trendline info dialog must be shown or not
+  const [ trendlineInfoShown, setTrendlineInfoShown ] = useState(false)
   
   // All the values to be returned by the AppContext.
   const value = {
@@ -78,6 +80,8 @@ export const AppProviders = ({children}) => {
     setShowObvChart,
     obvInfoShown, 
     setObvInfoShown,
+    trendlineInfoShown, 
+    setTrendlineInfoShown,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

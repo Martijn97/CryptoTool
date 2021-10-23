@@ -68,6 +68,7 @@ const GeneralAnalysisPage = (props) => {
     showObvChart,
     setShowObvChart,
     setObvInfoShown,
+    setTrendlineInfoShown,
   } = useContext(AppContext);
 
   // Styling
@@ -325,6 +326,17 @@ const GeneralAnalysisPage = (props) => {
                             Select datapoints to draw the trendline
                           </Typography>
                         )}
+                        <Typography style={{marginTop: "10px"}}>More Info:</Typography>
+                        {/* Button that opens an info dialog */}
+                        <IconButton
+                          aria-label="info"
+                          style={{ marginLeft: "10px" }}
+                          onClick={() => {
+                            setTrendlineInfoShown(true);
+                          }}
+                        >
+                          <InfoIcon />
+                        </IconButton>
                       </div>
                     </AccordionDetails>
                   </Accordion>
@@ -385,7 +397,7 @@ const GeneralAnalysisPage = (props) => {
                         aria-label="info"
                         style={{ margin: "10px", marginBottom: "20px" }}
                         onClick={() => {
-                          setObvInfoShown(true)
+                          setObvInfoShown(true);
                         }}
                       >
                         <InfoIcon />
