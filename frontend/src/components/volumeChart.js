@@ -10,8 +10,15 @@ const VolumeChart = (props) => {
   const ohlc = props.ohlc;
   const currency = props.currency;
 
-  const { chartList, setChartList, setCompareChartList, compareChartList } =
-    useContext(AppContext);
+  const {
+    chartList,
+    setChartList,
+    setCompareChartList,
+    compareChartList,
+    setStriplineData,
+    striplineData,
+    comparisonModalOpen,
+  } = useContext(AppContext);
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const volume_values_coin = JSONPath({
@@ -45,9 +52,19 @@ const VolumeChart = (props) => {
         enabled: true,
         snapToDataPoint: false,
       },
+      stripLines: [
+        {
+          value: striplineData,
+          thickness: 3,
+        },
+      ],
     },
     axisY: {
       includeZero: false,
+      title: "x1.000.000",
+      labelFormatter: function(e){
+				return  e.value/1000000;
+			}
     },
     height: 150,
     data: [
@@ -60,6 +77,12 @@ const VolumeChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#5a5a5a ">{name}</span><br>Date: {x}<br> Volume: {y}',
+        click: function (e) {
+          // if in overview mode, draw striplines
+          if (comparisonModalOpen) {
+            setStriplineData(e.dataPoint.x);
+          }
+        },
         dataPoints: volumeChartData(volume_values_coin),
       },
     ],

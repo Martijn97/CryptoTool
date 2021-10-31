@@ -15,6 +15,9 @@ const ObvIndicatorChart = ({ name, days, currency, rangeChanged, index }) => {
     chartList,
     setCompareChartList,
     compareChartList,
+    setStriplineData,
+    striplineData,
+    comparisonModalOpen,
   } = useContext(AppContext);
   // State that holds the data
   const [data, setData] = useState([]);
@@ -96,9 +99,19 @@ const ObvIndicatorChart = ({ name, days, currency, rangeChanged, index }) => {
         enabled: true,
         snapToDataPoint: false,
       },
+      stripLines: [
+        {
+          value: striplineData,
+          thickness: 3,
+        },
+      ],
     },
     axisY: {
       includeZero: false,
+      title: "x1.000.000.000",
+      labelFormatter: function(e){
+				return  e.value/1000000000;
+			}
     },
     height: 130,
     data: [
@@ -108,6 +121,12 @@ const ObvIndicatorChart = ({ name, days, currency, rangeChanged, index }) => {
         lineThickness: 3,
         toolTipContent:
           '<span style="color:#4d4dff ">On-Balanced Volume</span><br>Value: {y}<br>Date: {x}',
+        click: function (e) {
+          // if in overview mode, draw striplines
+          if (comparisonModalOpen) {
+            setStriplineData(e.dataPoint.x);
+          }
+        },
         dataPoints: obv_plot_data(volume_values_coin, ohlc_values_coin),
       },
     ],

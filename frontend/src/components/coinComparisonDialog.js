@@ -4,6 +4,7 @@ import CandlestickChart from "./candlestickChart";
 import VolumeChart from "./volumeChart";
 import ShapeChart from "./shapeChart";
 import ObvIndicatorChart from "./obvIndicatorChart";
+import moment from "moment";
 import {
   Button,
   Dialog,
@@ -11,7 +12,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Typography,
+  Grid,
 } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // This component renders a dialog in which two candlestick or volume charts are shown besides
 // each other. This makes it easy to compare them.
@@ -26,7 +30,8 @@ const CoinComparisonDialog = ({
   type, //Decides if the candlestick or the volume plot will be shown in the dialog
 }) => {
   // Import multiple states from the context. Mostly used to talk to the charts.
-  const { coinList, compareChartList } = useContext(AppContext);
+  const { coinList, compareChartList, striplineData, setStriplineData } =
+    useContext(AppContext);
 
   // Credits to Manoj Mohan from CanvasJS for the function below.
   // Function is used to change the range of all the charts when applied to one.
@@ -73,7 +78,46 @@ const CoinComparisonDialog = ({
         maxWidth={"md"}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Compare selected coins: {coinList[0]} vs. {coinList[1]}</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Compare selected coins: {coinList[0]} vs. {coinList[1]}
+        </DialogTitle>
+
+        {/* This components shows where the stripline is plotted */}
+        <Grid container justifyContent="flex-end">
+          <Grid item xs={5}>
+            {/* Show date of plotted stripline */}
+            {striplineData ? (
+              <Grid container justifyContent="right">
+                <Grid item xs={8} style={{ marginTop: 7 }}>
+                  <Typography>
+                    Selected:{" "}
+                    {moment(striplineData).format("DD-MM-YYYY HH:mm:ss")}
+                  </Typography>
+                </Grid>
+                <Grid item xs={3}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<DeleteIcon />}
+                    onClick={() => setStriplineData()}
+                  >
+                    Delete
+                  </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              // explain how to plot a stripline
+              <Grid container justifyContent="right">
+                <Grid item xs={12}>
+                  <Typography>
+                    Select a item to flag it in both charts
+                  </Typography>
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </Grid>
+        
+        {/* The charts */}
         <DialogContent>
           {type === "candlestick" && (
             <DialogContentText>

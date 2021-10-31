@@ -17,6 +17,8 @@ export const AppProviders = ({children}) => {
   const [trendLineExtension, setTrendLineExtension] = useState();
   // State that keeps track of the selected points for the trend line
   const [trendLineData, setTrendLineData] = useState([]);
+  // State that keeps track of the selected stripline
+  const [striplineData, setStriplineData] = useState();
   // State that keeps the timespan for the moving average
   const [timespan, setTimespan] = useState("day");
   // State that keeps the second timespan for the moving average
@@ -89,7 +91,9 @@ export const AppProviders = ({children}) => {
     chartList, 
     setChartList,
     setCompareChartList, 
-    compareChartList, 
+    compareChartList,
+    striplineData, 
+    setStriplineData,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

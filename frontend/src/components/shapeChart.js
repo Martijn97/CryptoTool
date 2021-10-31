@@ -9,8 +9,15 @@ import { JSONPath } from "jsonpath-plus";
 
 const ShapeChart = ({ name, data, currency, index }) => {
   // States are used to update the reference to the chart
-  const { setChartList, setCompareChartList, chartList, compareChartList } =
-    useContext(AppContext);
+  const {
+    setChartList,
+    setCompareChartList,
+    chartList,
+    compareChartList,
+    setStriplineData,
+    striplineData,
+    comparisonModalOpen,
+  } = useContext(AppContext);
 
   // Get the data of the first coin
   const ohlc_values_coin_1 = JSONPath({
@@ -59,6 +66,12 @@ const ShapeChart = ({ name, data, currency, index }) => {
           enabled: true,
           snapToDataPoint: false,
         },
+        stripLines: [
+          {
+            value: striplineData,
+            thickness: 3,
+          },
+        ],
       },
       axisY: {
         includeZero: false,
@@ -73,6 +86,12 @@ const ShapeChart = ({ name, data, currency, index }) => {
           lineThickness: 3,
           toolTipContent:
             '<span style="color:#007bb8 ">{name}</span><br>Date: {x}<br>Percentage: {y}',
+          click: function (e) {
+            // if in overview mode, draw striplines
+            if (comparisonModalOpen) {
+              setStriplineData(e.dataPoint.x);
+            }
+          },
           dataPoints: formatData(ohlc_values_coin_1, base_1),
         },
         {
@@ -83,6 +102,12 @@ const ShapeChart = ({ name, data, currency, index }) => {
           lineThickness: 3,
           toolTipContent:
             '<span style="color:#40e0d0 ">{name}</span><br>Date: {x}<br>Percentage: {y}',
+          click: function (e) {
+            // if in overview mode, draw striplines
+            if (comparisonModalOpen) {
+              setStriplineData(e.dataPoint.x);
+            }
+          },
           dataPoints: formatData(ohlc_values_coin_2, base_2),
         },
       ],

@@ -31,6 +31,9 @@ const CandlestickChart = (props) => {
     chartList,
     setCompareChartList,
     compareChartList,
+    comparisonModalOpen,
+    striplineData,
+    setStriplineData,
   } = useContext(AppContext);
   // State used to force a re-render of the page
   const [, setRandom] = useState(Math.random());
@@ -329,6 +332,12 @@ const CandlestickChart = (props) => {
         enabled: true,
         snapToDataPoint: false,
       },
+      stripLines: [
+        {
+          value: striplineData,
+          thickness:3,
+        },
+      ],
     },
     axisY: {
       includeZero: false,
@@ -351,10 +360,20 @@ const CandlestickChart = (props) => {
         toolTipContent:
           '<span style="color:#5a5a5a ">{name}</span><br>Date: {x}<br>Open: {y[0]}<br>High: {y[1]}<br>Low: {y[2]}<br>Close: {y[3]}',
         click: function (e) {
-          trendLineData.length < 2 &&
-            setTrendLineData((trendLineData) => {
-              return [...trendLineData, { x: e.dataPoint.x, y: e.dataPoint.y }];
-            });
+          // if in overview mode, draw striplines
+          if (!comparisonModalOpen) {
+            trendLineData.length < 2 &&
+              setTrendLineData((trendLineData) => {
+                return [
+                  ...trendLineData,
+                  { x: e.dataPoint.x, y: e.dataPoint.y },
+                ];
+              });
+          } 
+          // if in comparison mode, draw striplines
+          else {
+            setStriplineData(e.dataPoint.x);
+          }
         },
         dataPoints: candlestickChartData(ohlc_values_coin),
       },
@@ -503,9 +522,17 @@ const CandlestickChart = (props) => {
         onRef={(ref) => {
           setChartList((chartList) => {
             if (ref?.theme === "light2") {
-              return [...chartList, {"name":"candlestick", index: props.index, name_coin: name, "ref": ref}];
+              return [
+                ...chartList,
+                {
+                  name: "candlestick",
+                  index: props.index,
+                  name_coin: name,
+                  ref: ref,
+                },
+              ];
             } else {
-              return [...chartList]
+              return [...chartList];
             }
           });
           setCompareChartList((compareChartList) => {

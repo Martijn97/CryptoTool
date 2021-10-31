@@ -72,6 +72,7 @@ const GeneralAnalysisPage = (props) => {
     setChartList,
     chartList,
     setCompareChartList,
+    setStriplineData,
   } = useContext(AppContext);
 
   // Styling
@@ -488,6 +489,8 @@ const GeneralAnalysisPage = (props) => {
         compareModalOpen={comparisonModalOpen}
         onCloseCompareModal={() => {
           setComparisonModalOpen(false);
+          // Remove striplines
+          setStriplineData();
           // Remove comparison charts
           setCompareChartList([]);
           // Set the ChartList back to the one without the comparison chart
