@@ -70,6 +70,7 @@ const ShapeChart = ({ name, data, currency, index }) => {
           {
             value: striplineData,
             thickness: 3,
+            color:"#e7298a",
           },
         ],
       },

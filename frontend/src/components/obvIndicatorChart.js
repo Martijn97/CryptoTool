@@ -103,6 +103,7 @@ const ObvIndicatorChart = ({ name, days, currency, rangeChanged, index }) => {
         {
           value: striplineData,
           thickness: 3,
+          color:"#e7298a",
         },
       ],
     },

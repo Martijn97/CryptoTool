@@ -336,6 +336,7 @@ const CandlestickChart = (props) => {
         {
           value: striplineData,
           thickness:3,
+          color:"#e7298a",
         },
       ],
     },
@@ -403,9 +404,9 @@ const CandlestickChart = (props) => {
         type: "spline",
         xValueFormatString: "DD-MM-YYYY",
         markerType: "none",
-        color: "#007bb8",
+        color: "#377eb8",
         toolTipContent:
-          '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
+          '<span style="color:#377eb8 ">Moving average:</span><br>Date: {x}',
         dataPoints:
           allowAnalysis &&
           movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
@@ -414,9 +415,9 @@ const CandlestickChart = (props) => {
         type: "spline",
         xValueFormatString: "DD-MM-YYYY",
         markerType: "none",
-        color: "#40e0d0",
+        color: "#ff7f00",
         toolTipContent:
-          '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
+          '<span style="color:#ff7f00 ">Moving average:</span><br>Date: {x}',
         dataPoints:
           allowAnalysis &&
           showCrossMovingAverage &&
