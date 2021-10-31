@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CanvasJSChart } from "canvasjs-react-charts";
+import { AppContext } from "./../context/AppContext";
 import { JSONPath } from "jsonpath-plus";
 import moment from "moment";
 
@@ -8,6 +9,9 @@ const VolumeChart = (props) => {
   const name = props.name;
   const ohlc = props.ohlc;
   const currency = props.currency;
+
+  const { chartList, setChartList, setCompareChartList, compareChartList } =
+    useContext(AppContext);
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const volume_values_coin = JSONPath({
@@ -34,8 +38,13 @@ const VolumeChart = (props) => {
     animationEnabled: true,
     exportEnabled: false,
     zoomEnabled: true,
+    rangeChanged: props.rangeChanged,
     axisX: {
       valueFormatString: "DD-MM-YYYY",
+      crosshair: {
+        enabled: true,
+        snapToDataPoint: false,
+      },
     },
     axisY: {
       includeZero: false,
@@ -57,7 +66,27 @@ const VolumeChart = (props) => {
   };
 
   // Return the CanvasJS Candlestick chart.
-  return <CanvasJSChart options={options} />;
+  return (
+    <CanvasJSChart
+      options={options}
+      // the ref is used for syncing zooming and panning in comparison mode as well as at the overview page
+      onRef={(ref) => {
+        setChartList((chartList) => {
+          if (ref?.theme === "light2") {
+            return [
+              ...chartList,
+              { name: "volume", index: props.index, name_coin: name, ref: ref },
+            ];
+          } else {
+            return [...chartList];
+          }
+        });
+        setCompareChartList((compareChartList) => {
+          return [...compareChartList, ref];
+        });
+      }}
+    />
+  );
 };
 
 export default VolumeChart;

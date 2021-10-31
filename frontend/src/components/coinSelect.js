@@ -15,9 +15,19 @@ import axios from "axios";
 // Dialog on the overview page. Appears when the users presses the select coins button.
 const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
   // Global states from the context
-  const { setCoinList, offline } = useContext(AppContext);
+  const {
+    setCoinList,
+    setShowObvChart,
+    showObvChart,
+    setChartList,
+    chartList,
+    setCompareChartList,
+    compareChartList,
+    coinList,
+    offline,
+  } = useContext(AppContext);
   // State that keeps the data from the API
-  const [ coinSelection, setCoinSelection ] = useState();
+  const [coinSelection, setCoinSelection] = useState();
 
   // Repsponsible for rendering
   useEffect(() => {
@@ -40,31 +50,33 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
 
   // Function that adds the colours to the Treemap based on the growth in the last 24h
   function coloursTreeMap(coinSelection) {
-    const colours = []
+    const colours = [];
 
     coinSelection?.data.map((item) => {
-
       // Compute the opacity and places a minimum opacity of 0.2
-      const opacity = 0.2 + (15 * (Math.abs(item.price_change_percentage_24h)/100));
+      const opacity =
+        0.2 + 15 * (Math.abs(item.price_change_percentage_24h) / 100);
 
       // Add colour to the array of colours
-      item.price_change_percentage_24h < 0 ? colours.push("rgba(255, 0, 0," + opacity + ")") : colours.push("rgba(0, 128, 0," + opacity + ")");
-    })
+      item.price_change_percentage_24h < 0
+        ? colours.push("rgba(255, 0, 0," + opacity + ")")
+        : colours.push("rgba(0, 128, 0," + opacity + ")");
+    });
 
     // return the array back to the TreeMap
-    return colours
-  };
+    return colours;
+  }
 
   // Transforms the data into the right format for the Treemap
   const transformDataSyntax = () => {
-    const coin_selection_list = []
+    const coin_selection_list = [];
 
     coinSelection?.data.map((i) => {
-      return coin_selection_list.push({'x': i.id, 'y': i.market_cap})
-    })
-    
-    return coin_selection_list
-  }
+      return coin_selection_list.push({ x: i.id, y: i.market_cap });
+    });
+
+    return coin_selection_list;
+  };
 
   // Settings and data of the Treemap
   const state = {
@@ -81,8 +93,8 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
       plotOptions: {
         treemap: {
           distributed: true,
-          enableShades: false
-        }
+          enableShades: false,
+        },
       },
       chart: {
         type: "treemap",
@@ -91,12 +103,20 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
         },
         events: {
           dataPointSelection: (event, chartContext, config) => {
+            // Remove the OBV chart from reference if shown
+            if (showObvChart) {
+              setShowObvChart(false);
+              setChartList(chartList.slice(0, -1));
+              setCompareChartList(compareChartList.slice(0, -1))
+            }
+            // Add the coin to the list of coins
             setCoinList((coinList) => {
               return [
                 ...coinList,
                 config.w.config.series[0].data[config.dataPointIndex].x,
               ];
             });
+            // Close the coin manager
             onCloseCoinManager();
           },
         },
@@ -117,8 +137,9 @@ const CoinSelector = ({ coinManagerOpen, onCloseCoinManager }) => {
         <DialogTitle id="form-dialog-title">Select coins</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Select coins below to add it to your analysis. The colour of the coins represents the positive or negative growth in the last 24 hours.
-            Press done or cancel to continue to the overview page
+            Select coins below to add it to your analysis. The colour of the
+            coins represents the positive or negative growth in the last 24
+            hours. Press done or cancel to continue to the overview page
           </DialogContentText>
           <InputLabel id="demo-simple-select-label">Coins:</InputLabel>
           {/* The treemap */}

@@ -25,7 +25,44 @@ const CoinComparisonDialog = ({
   type, //Decides if the candlestick or the volume plot will be shown in the dialog
 }) => {
   // Import multiple states from the context. Mostly used to talk to the charts.
-  const { coinList } = useContext(AppContext);
+  const { coinList, compareChartList } = useContext(AppContext);
+
+  // Credits to Manoj Mohan from CanvasJS for the function below.
+  // Function is used to change the range of all the charts when applied to one.
+  function syncHandler(e) {
+    var charts = compareChartList;
+
+    // Loop over the charts and apply appropriate action
+    for (var i = 0; i < charts.length; i++) {
+      var chart = charts[i];
+      //check if there is no undefined chart
+      if (!(typeof chart === "undefined")) {
+        
+        if (!chart.options.axisX) chart.options.axisX = {};
+        if (!chart.options.axisY) chart.options.axisY = {};
+
+        // if a reset is triggered, reset all charts
+        if (e.trigger === "reset") {
+          chart.options.axisX.viewportMinimum =
+            chart.options.axisX.viewportMaximum = null;
+          chart.options.axisY.viewportMinimum =
+            chart.options.axisY.viewportMaximum = null;
+
+          chart.render();
+        } 
+        // In the other cases, change the view to the same as the event
+        else if (chart !== e.chart) {
+          chart.options.axisX.viewportMinimum = e.axisX[0].viewportMinimum;
+          chart.options.axisX.viewportMaximum = e.axisX[0].viewportMaximum;
+
+          chart.options.axisY.viewportMinimum = e.axisY[0].viewportMinimum;
+          chart.options.axisY.viewportMaximum = e.axisY[0].viewportMaximum;
+
+          chart.render();
+        }
+      }
+    }
+  }
 
   const dialog = (compareModalOpen, onCloseCompareModal) => {
     return (
@@ -42,33 +79,49 @@ const CoinComparisonDialog = ({
             <DialogContentText>
               {/* candlestick first coin */}
               <CandlestickChart
+                index={0}
                 name={coinList[0]}
                 ohlc={ohlc}
                 currency={currency}
                 days={days}
                 allowAnalysis={allowAnalysis}
+                rangeChanged={syncHandler}
               />
               {/* candlestick second coin */}
               <CandlestickChart
+                index={1}
                 name={coinList[1]}
                 ohlc={ohlc}
                 currency={currency}
                 days={days}
                 allowAnalysis={allowAnalysis}
+                rangeChanged={syncHandler}
               />
             </DialogContentText>
           )}
           {type === "volume" && (
             <DialogContentText>
               {/* volume of first coin */}
-              <VolumeChart name={coinList[0]} ohlc={ohlc} currency={currency} />
+              <VolumeChart
+                index={0}
+                name={coinList[0]}
+                ohlc={ohlc}
+                currency={currency}
+                rangeChanged={syncHandler}
+              />
               {/* volume of second coin */}
-              <VolumeChart name={coinList[1]} ohlc={ohlc} currency={currency} />
+              <VolumeChart
+                index={1}
+                name={coinList[1]}
+                ohlc={ohlc}
+                currency={currency}
+                rangeChanged={syncHandler}
+              />
             </DialogContentText>
           )}
           {type === "relative" && (
             <DialogContentText>
-              <ShapeChart name={coinList} data={ohlc} currency={currency} />
+              <ShapeChart index={0} name={coinList} data={ohlc} currency={currency}/>
             </DialogContentText>
           )}
         </DialogContent>

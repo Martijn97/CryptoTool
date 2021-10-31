@@ -5,9 +5,17 @@ import { AppContext } from "./../context/AppContext";
 import axios from "axios";
 import { Grid } from "@material-ui/core";
 
-const ObvIndicatorChart = ({ name, days, currency }) => {
+const ObvIndicatorChart = ({ name, days, currency, rangeChanged, index }) => {
   // States from the context
-  const { coinList, offline, showObvChart } = useContext(AppContext);
+  const {
+    coinList,
+    offline,
+    showObvChart,
+    setChartList,
+    chartList,
+    setCompareChartList,
+    compareChartList,
+  } = useContext(AppContext);
   // State that holds the data
   const [data, setData] = useState([]);
 
@@ -81,8 +89,13 @@ const ObvIndicatorChart = ({ name, days, currency }) => {
     animationEnabled: true,
     exportEnabled: false,
     zoomEnabled: true,
+    rangeChanged: rangeChanged,
     axisX: {
       valueFormatString: "DD-MM-YYYY",
+      crosshair: {
+        enabled: true,
+        snapToDataPoint: false,
+      },
     },
     axisY: {
       includeZero: false,
@@ -103,7 +116,25 @@ const ObvIndicatorChart = ({ name, days, currency }) => {
   // Return the CanvasJS Candlestick chart.
   return (
     <Grid container justifyContent="left">
-      <CanvasJSChart options={options} />
+      <CanvasJSChart
+        options={options}
+        // the ref is used for syncing zooming and panning in comparison mode as well as at the overview page
+        onRef={(ref) => {
+          setChartList((chartList) => {
+            if (ref?.theme === "light2") {
+              return [
+                ...chartList,
+                { name: "obv", index: index, name_coin: name, ref: ref },
+              ];
+            } else {
+              return [...chartList];
+            }
+          });
+          setCompareChartList((compareChartList) => {
+            return [...compareChartList, ref];
+          });
+        }}
+      />
     </Grid>
   );
 };

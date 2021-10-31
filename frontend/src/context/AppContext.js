@@ -41,7 +41,11 @@ export const AppProviders = ({children}) => {
   const [ obvInfoShown, setObvInfoShown ] = useState(false)
   // State that knows if the trendline info dialog must be shown or not
   const [ trendlineInfoShown, setTrendlineInfoShown ] = useState(false)
-  
+  // State that keeps track of the charts on the overview page
+  const [ chartList, setChartList ] = useState([])
+  // State that keeps track of the charts in the comparison view
+  const [ compareChartList, setCompareChartList ] = useState([])
+
   // All the values to be returned by the AppContext.
   const value = {
     offline,
@@ -82,6 +86,10 @@ export const AppProviders = ({children}) => {
     setObvInfoShown,
     trendlineInfoShown, 
     setTrendlineInfoShown,
+    chartList, 
+    setChartList,
+    setCompareChartList, 
+    compareChartList, 
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -13,7 +13,7 @@ const CandlestickChart = (props) => {
   // true if the analysis must be shown in the candlestck plot
   const allowAnalysis = props.allowAnalysis;
 
-  // States from the context that contain general information. 
+  // States from the context that contain general information.
   // Used to communicate to the generalAnalysis component
   const {
     trendLineExtension,
@@ -27,6 +27,10 @@ const CandlestickChart = (props) => {
     candlestickPatterns,
     showPatterns,
     showFlagsMovingAverage,
+    setChartList,
+    chartList,
+    setCompareChartList,
+    compareChartList,
   } = useContext(AppContext);
   // State used to force a re-render of the page
   const [, setRandom] = useState(Math.random());
@@ -34,21 +38,25 @@ const CandlestickChart = (props) => {
   // Function that computes the amount the trend line is extended.
   function computeExtension(days) {
     const timeExtensionTrendLine =
-    days === "max" ? "year" : days > 30 ? "month" : "days";
+      days === "max" ? "year" : days > 30 ? "month" : "days";
     const timeExtensionTrendLineValue =
-    timeExtensionTrendLine === "year" ? 365 : timeExtensionTrendLine === "month" ? 32 : 1;
+      timeExtensionTrendLine === "year"
+        ? 365
+        : timeExtensionTrendLine === "month"
+        ? 32
+        : 1;
 
     return timeExtensionTrendLineValue;
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     // When the scope of the trendline is changed. The default extension should be changed.
     setTrendLineExtension(computeExtension(props.days));
 
     // When the scope of the candlestick plot is changed. The trendline should be removed.
     onRemoveDate(1);
     onRemoveDate(0);
-  }, [props.days, props.currency])
+  }, [props.days, props.currency]);
 
   // Slice the data in a certain currency of a specific coin from the entire dataset
   const ohlc_values_coin = JSONPath({
@@ -98,9 +106,11 @@ const CandlestickChart = (props) => {
     });
     return pattern_data;
   };
-  
+
   // Execute the two function above to get the right format data.
-  const pattern_data = format_pattern_data(get_pattern_data(candlestickPatterns))
+  const pattern_data = format_pattern_data(
+    get_pattern_data(candlestickPatterns)
+  );
 
   // The function converts OHLC data into the right input for the Candlestick chart
   const candlestickChartData = (ohlc_values_coin) => {
@@ -117,13 +127,11 @@ const CandlestickChart = (props) => {
 
   // Function returns the data to plot the trend line
   const trendLineChartData = (trendLineData) => {
-
     // check if there are two points selected. Two are necessary to draw a line.
     if (trendLineData.length === 2) {
-
       // Sort the data such that the line can extended on the right direction
-      trendLineData.sort(function(a,b){
-        return new Date(a.x) - new Date(b.x)
+      trendLineData.sort(function (a, b) {
+        return new Date(a.x) - new Date(b.x);
       });
 
       // Compute the difference in time between the two points
@@ -135,21 +143,24 @@ const CandlestickChart = (props) => {
       const diffYesterday = moment(trendLineData[0].x).diff(
         moment(trendLineData[0].x).subtract(1, "days")
       );
-      
+
       // Compute the difference between the points based on diffYesterday
       const divideMoment = diffMoment / diffYesterday;
 
       // Compute if the trendline is decreasing or increasing
-      const directionTrendline = trendLineData[0].y[1] > trendLineData[1].y[1] ? 1 : 2;
-      
+      const directionTrendline =
+        trendLineData[0].y[1] > trendLineData[1].y[1] ? 1 : 2;
+
       // Compute the difference in value between the two points
-      const diffLineData = trendLineData[0].y[directionTrendline] - trendLineData[1].y[directionTrendline];
-      
+      const diffLineData =
+        trendLineData[0].y[directionTrendline] -
+        trendLineData[1].y[directionTrendline];
+
       return [
         {
           x: new Date(
             moment(trendLineData[0].x)
-              .subtract(trendLineExtension, 'days')
+              .subtract(trendLineExtension, "days")
               .format("YYYY-MM-DD HH:mm:ss")
           ),
           y:
@@ -167,7 +178,7 @@ const CandlestickChart = (props) => {
         {
           x: new Date(
             moment(trendLineData[1].x)
-              .add(trendLineExtension, 'days')
+              .add(trendLineExtension, "days")
               .format("YYYY-MM-DD HH:mm:ss")
           ),
           y:
@@ -179,32 +190,43 @@ const CandlestickChart = (props) => {
   };
 
   // Function that returns the data for the moving average plot
-  const movingAverageData = (ohlc_values_coin, ohlc_values_year_coin, timespanMA) => {
+  const movingAverageData = (
+    ohlc_values_coin,
+    ohlc_values_year_coin,
+    timespanMA
+  ) => {
     // Checks if the moving average plot needs to be shown
     if (!showMovingAverage) {
       return [];
     }
 
     // Add the ohlc data of the last year to the dataset
-    const ohlc_values_coin_concat = ohlc_values_coin.concat(ohlc_values_year_coin)
+    const ohlc_values_coin_concat = ohlc_values_coin.concat(
+      ohlc_values_year_coin
+    );
     // Empty array to fill with the results
-    const coinClosingValues = []
+    const coinClosingValues = [];
 
     // Sets the timespan from string to number of days.
-    const timeMultiplication = timespanMA === 'day' ? 1 : timespanMA === 'month' ? 31 : 365;
+    const timeMultiplication =
+      timespanMA === "day" ? 1 : timespanMA === "month" ? 31 : 365;
 
     ohlc_values_coin.map((i) => {
       // contains the date of the current item
       let date = new Date(moment(i[0]).format("YYYY-MM-DD HH:mm:ss"));
 
-      let valuesTimespan = []
+      let valuesTimespan = [];
 
       // check for each other item if it is within the timestamp near to the current item
       ohlc_values_coin_concat.map((i) => {
-        let diffTime = date - i[0]
+        let diffTime = date - i[0];
 
-        return 0 <= diffTime && diffTime < (timeMultiplication * 86400000) && valuesTimespan.push(i[4]) 
-      })
+        return (
+          0 <= diffTime &&
+          diffTime < timeMultiplication * 86400000 &&
+          valuesTimespan.push(i[4])
+        );
+      });
 
       // Add all the point together
       const value = valuesTimespan.reduce(function (a, b) {
@@ -213,73 +235,83 @@ const CandlestickChart = (props) => {
 
       // Push the points to the array
       return coinClosingValues.push({
-        x: date, 
-        y: value/valuesTimespan.length
-      })
+        x: date,
+        y: value / valuesTimespan.length,
+      });
     });
 
     return coinClosingValues;
   };
 
   // Get the data of the intersection points between the prices and the moving average
-  const movingAverageIntersectionData = (ohlc_values_coin, ohlc_values_year_coin) => {
+  const movingAverageIntersectionData = (
+    ohlc_values_coin,
+    ohlc_values_year_coin
+  ) => {
     // Check if the intersections must be plotted or not
     if (!showFlagsMovingAverage) {
-      return
+      return;
     }
 
     // Get the moving average data
-    const MA_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan);
+    const MA_Data = movingAverageData(
+      ohlc_values_coin,
+      ohlc_values_year_coin,
+      timespan
+    );
     // In case of cross-over, we need a second moving average
-    const MA_Two_Data = movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo);
-    
+    const MA_Two_Data = movingAverageData(
+      ohlc_values_coin,
+      ohlc_values_year_coin,
+      timespanTwo
+    );
 
     // Create an empty array to store the positions of the intersections
-    const topOrBottomPrice = []
-    const positionIntersection = []
-    
+    const topOrBottomPrice = [];
+    const positionIntersection = [];
+
     // Check for each point if it is on top or below the moving average.
     if (!showCrossMovingAverage) {
       // The intersections between the price and moving average
       MA_Data.map((i, index) => {
         if (i.y > ohlc_values_coin[index][4]) {
-          return topOrBottomPrice.push(1)
+          return topOrBottomPrice.push(1);
         } else {
-          return topOrBottomPrice.push(0)
+          return topOrBottomPrice.push(0);
         }
-      })
+      });
     } else {
       // The intersections during cross-over moving average
       MA_Data.map((i, index) => {
         if (i.y > MA_Two_Data[index].y) {
-          return topOrBottomPrice.push(1)
+          return topOrBottomPrice.push(1);
         } else {
-          return topOrBottomPrice.push(0)
+          return topOrBottomPrice.push(0);
         }
-      })
+      });
     }
-    
+
     // Transform the data into data that can be plotted
     topOrBottomPrice.map((i, index) => {
       if (index === 0) {
-        return null
+        return null;
       }
-      if ( i !== topOrBottomPrice[index-1]) {
-        return positionIntersection.push(MA_Data[index])
+      if (i !== topOrBottomPrice[index - 1]) {
+        return positionIntersection.push(MA_Data[index]);
       } else {
-        return null
+        return null;
       }
-    })
+    });
 
-    return positionIntersection
-  }
+    return positionIntersection;
+  };
 
   // Function called in the trendline menu to remove dates.
   function onRemoveDate(index) {
     trendLineData.splice(index, 1);
     setTrendLineData(trendLineData);
     setRandom(Math.random());
-  };
+  }
 
   // The settings and data of the candlestick chart
   const options = {
@@ -287,11 +319,16 @@ const CandlestickChart = (props) => {
     animationEnabled: true,
     exportEnabled: false,
     zoomEnabled: true,
+    rangeChanged: props.rangeChanged, //used for sync zooming and panning
     title: {
       text: "",
     },
     axisX: {
       valueFormatString: "DD-MM-YYYY",
+      crosshair: {
+        enabled: true,
+        snapToDataPoint: false,
+      },
     },
     axisY: {
       includeZero: false,
@@ -304,7 +341,12 @@ const CandlestickChart = (props) => {
         name: "Price " + name,
         risingColor: "#4ca64c",
         fallingColor: "#ff4c4c",
-        yValueFormatString: currency === "eur" ? "€ ###0.00" : currency === "usd" ? "$ ###0.00" : "£ ###0.00",
+        yValueFormatString:
+          currency === "eur"
+            ? "€ ###0.00"
+            : currency === "usd"
+            ? "$ ###0.00"
+            : "£ ###0.00",
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#5a5a5a ">{name}</span><br>Date: {x}<br>Open: {y[0]}<br>High: {y[1]}<br>Low: {y[2]}<br>Close: {y[3]}',
@@ -331,7 +373,12 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#001123 ">Moving average intersection</span><br>Date: {x}',
-        dataPoints: allowAnalysis && movingAverageIntersectionData(ohlc_values_coin, ohlc_values_year_coin)
+        dataPoints:
+          allowAnalysis &&
+          movingAverageIntersectionData(
+            ohlc_values_coin,
+            ohlc_values_year_coin
+          ),
       },
       {
         type: "spline",
@@ -340,7 +387,9 @@ const CandlestickChart = (props) => {
         color: "#007bb8",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
-        dataPoints: allowAnalysis && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
+        dataPoints:
+          allowAnalysis &&
+          movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespan),
       },
       {
         type: "spline",
@@ -349,7 +398,14 @@ const CandlestickChart = (props) => {
         color: "#40e0d0",
         toolTipContent:
           '<span style="color:#FFA500 ">Moving average:</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showCrossMovingAverage && movingAverageData(ohlc_values_coin, ohlc_values_year_coin, timespanTwo),
+        dataPoints:
+          allowAnalysis &&
+          showCrossMovingAverage &&
+          movingAverageData(
+            ohlc_values_coin,
+            ohlc_values_year_coin,
+            timespanTwo
+          ),
       },
       {
         type: "scatter",
@@ -360,7 +416,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[0]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[0]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -371,7 +428,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[1]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[1]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -382,7 +440,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[2]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[2]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -393,7 +452,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -404,7 +464,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[3]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -415,7 +476,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[5]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[5]?.data[0] : [],
       },
       {
         type: "scatter",
@@ -426,7 +488,8 @@ const CandlestickChart = (props) => {
         xValueFormatString: "DD-MM-YYYY",
         toolTipContent:
           '<span style="color:#cd00cd ">Candstick pattern: <br>{name}</span><br>Date: {x}',
-        dataPoints: allowAnalysis && showPatterns ? pattern_data[6]?.data[0] : [],
+        dataPoints:
+          allowAnalysis && showPatterns ? pattern_data[6]?.data[0] : [],
       },
     ],
   };
@@ -434,7 +497,22 @@ const CandlestickChart = (props) => {
   // Return the CanvasJS Candlestick chart.
   return (
     <Grid container justifyContent="left">
-      <CanvasJSChart options={options} />
+      <CanvasJSChart
+        options={options}
+        // the ref is used for syncing zooming and panning in comparison mode as well as at the overvewi page
+        onRef={(ref) => {
+          setChartList((chartList) => {
+            if (ref?.theme === "light2") {
+              return [...chartList, {"name":"candlestick", index: props.index, name_coin: name, "ref": ref}];
+            } else {
+              return [...chartList]
+            }
+          });
+          setCompareChartList((compareChartList) => {
+            return [...compareChartList, ref];
+          });
+        }}
+      />
     </Grid>
   );
 };

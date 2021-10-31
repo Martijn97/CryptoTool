@@ -12,7 +12,7 @@ import {
   InputLabel,
   Select,
 } from "@material-ui/core";
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert from "@mui/material/Alert";
 import {
   TextField,
   AccordionSummary,
@@ -69,6 +69,10 @@ const GeneralAnalysisPage = (props) => {
     setShowObvChart,
     setObvInfoShown,
     setTrendlineInfoShown,
+    setChartList,
+    chartList,
+    compareChartList,
+    setCompareChartList,
   } = useContext(AppContext);
 
   // Styling
@@ -146,6 +150,45 @@ const GeneralAnalysisPage = (props) => {
     setSnackOpen(false);
   };
 
+  // Credits to Manoj Mohan from CanvasJS for the function below.
+  // Function is used to change the range of all the charts when applied to one.
+  function syncHandler(e) {
+    // Retrieve the references to the charts
+    var charts = chartList.map((item) => {
+      return item.ref;
+    });
+
+    // Loop over the charts and apply appropriate action
+    for (var i = 0; i < charts.length; i++) {
+      //check if there is no undefined chart
+      if (!(typeof charts[i] === "undefined")) {
+        var chart = charts[i];
+
+        if (!chart.options.axisX) chart.options.axisX = {};
+        if (!chart.options.axisY) chart.options.axisY = {};
+
+        // if a reset is triggered, reset all charts
+        if (e.trigger === "reset") {
+          chart.options.axisX.viewportMinimum =
+            chart.options.axisX.viewportMaximum = null;
+          chart.options.axisY.viewportMinimum =
+            chart.options.axisY.viewportMaximum = null;
+
+          chart.render();
+        }
+        // In the other cases, change the view to the same as the event
+        else if (e.chart !== chart) {
+          chart.options.axisX.viewportMinimum = e.axisX[0].viewportMinimum;
+          chart.options.axisX.viewportMaximum = e.axisX[0].viewportMaximum;
+          chart.options.axisY.viewportMinimum = e.axisY[0].viewportMinimum;
+          chart.options.axisY.viewportMaximum = e.axisY[0].viewportMaximum;
+
+          chart.render();
+        }
+      }
+    }
+  }
+
   // This renders the cards for each coin. It contains the Candlestick chart of the coin.
   const renderCoinCards = (ohlc) => {
     const renderCoinCard = coinList.map((name, i) => {
@@ -174,24 +217,30 @@ const GeneralAnalysisPage = (props) => {
               >
                 {/*Calls the function to render the Candlestick chart*/}
                 <CandlestickChart
+                  index={i}
                   name={name}
                   ohlc={ohlc}
                   currency={current_currency()}
                   days={props.days}
                   allowAnalysis={true}
+                  rangeChanged={syncHandler}
                 />
                 {/*Calls the function to render the Volume chart*/}
                 <VolumeChart
+                  index={i}
                   name={name}
                   ohlc={ohlc}
                   currency={current_currency()}
+                  rangeChanged={syncHandler}
                 />
                 {/* Calls the component that contains the OBV indicator chart */}
                 {showObvChart && (
                   <ObvIndicatorChart
+                    index={i}
                     name={name}
                     days={props.days}
                     currency={current_currency()}
+                    rangeChanged={syncHandler}
                   />
                 )}
               </Grid>
@@ -329,7 +378,9 @@ const GeneralAnalysisPage = (props) => {
                             Select datapoints to draw the trendline
                           </Typography>
                         )}
-                        <Typography style={{marginTop: "10px"}}>More Info:</Typography>
+                        <Typography style={{ marginTop: "10px" }}>
+                          More Info:
+                        </Typography>
                         {/* Button that opens an info dialog */}
                         <IconButton
                           aria-label="info"
@@ -385,6 +436,12 @@ const GeneralAnalysisPage = (props) => {
                       {/* The OBV indicator card */}
                       <Button
                         onClick={() => {
+                          // Remove the OBV from the list of charts
+                          if (showObvChart) {
+                            coinList.length === 1
+                              ? setChartList(chartList.slice(0, -1))
+                              : setChartList(chartList.slice(0, -2));
+                          }
                           setShowObvChart(!showObvChart);
                           if (showObvChart === false) {
                             setSnackOpen(true);
@@ -427,13 +484,26 @@ const GeneralAnalysisPage = (props) => {
       {renderCoinCards(ohlc)}
       <CoinComparisonDialog
         compareModalOpen={comparisonModalOpen}
-        onCloseCompareModal={() => setComparisonModalOpen(false)}
+        onCloseCompareModal={() => {
+          setComparisonModalOpen(false);
+          // Remove comparison charts
+          setCompareChartList([]);
+          // Set the ChartList back to the one without the comparison chart
+          if (compareChart === "relative") {
+            // Only one chart must be removed
+            setChartList(chartList.slice(0, -1)); 
+          } else {
+            // Two charts have to be removed
+            setChartList(chartList.slice(0, -2));
+          }
+        }}
         ohlc={ohlc}
         currency={current_currency()}
         days={props.days}
         allowAnalysis={plotAnalysis}
         type={compareChart}
       />
+      {/* Snackbar to warn user about long loading time */}
       <Snackbar
         anchorOrigin={{
           vertical: "bottom",
@@ -443,7 +513,7 @@ const GeneralAnalysisPage = (props) => {
         autoHideDuration={600}
         onClose={handleClose}
       >
-        <Alert onClose={handleClose} severity="warning" sx={{ width: '100%' }}>
+        <Alert onClose={handleClose} severity="warning" sx={{ width: "100%" }}>
           Loading.... This may take a few seconds
         </Alert>
       </Snackbar>

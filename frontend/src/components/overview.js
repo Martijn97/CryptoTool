@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useContext } from "react";
 import { JSONPath } from "jsonpath-plus";
-import { Card, CardContent, CardMedia, Typography, Grid, Button } from "@material-ui/core";
-import CoinSelector from './coinSelect.js'
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Grid,
+  Button,
+} from "@material-ui/core";
+import CoinSelector from "./coinSelect.js";
 import CoinInfoModal from "./coinInfo.js";
 import MovingAverageInfo from "./movingAverageInfo.js";
-import PatternInfoModal from "./patternInfo"
+import PatternInfoModal from "./patternInfo";
 import ObvInfoDialog from "./obvInfoDialog.js";
 import TrendlineInfoDialog from "./trendlineInfoDialog.js";
-import { AppContext } from '../context/AppContext';
+import { AppContext } from "../context/AppContext";
 import axios from "axios";
 
 /*
@@ -34,11 +41,11 @@ const OverviewPage = (props) => {
     setCoinList,
     patternInfoModalOpen,
     setPatternInfoModalOpen,
-    movingAverageInfoShown, 
+    movingAverageInfoShown,
     setMovingAverageInfoShown,
-    obvInfoShown, 
+    obvInfoShown,
     setObvInfoShown,
-    trendlineInfoShown, 
+    trendlineInfoShown,
     setTrendlineInfoShown,
     offline,
   } = useContext(AppContext);
@@ -80,16 +87,6 @@ const OverviewPage = (props) => {
     json: coin_info,
   });
 
-  // Function to remove a coin from coinList
-  // when the remove button is used
-  function onRemoveCoin(coin_name) {
-    const index = coinList.indexOf(coin_name);
-
-    coinList.splice(index, 1);
-    setCoinList(coinList);
-    setRandom(Math.random());
-  }
-
   const currencyTable = (coin_value, coin_info) => {
     // Return the name of the cryptocurrencies
     const result_name = JSONPath({ path: "$.*~", json: coin_value });
@@ -109,7 +106,7 @@ const OverviewPage = (props) => {
       // but it is returned by the API call. Often, this only occurs if the tool is
       // in offline mode.
       if (!coinList.includes(result_name[i])) {
-        return (null);
+        return null;
       }
 
       // Returns a single card for a crypto coin with its information.
@@ -145,15 +142,6 @@ const OverviewPage = (props) => {
                     }}
                   >
                     More info
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    style={{ marginTop: "10px", marginLeft: "10px" }}
-                    onClick={() => {
-                      onRemoveCoin(result_name[i]);
-                    }}
-                  >
-                    Remove coin
                   </Button>
                 </CardContent>
               </Grid>
@@ -208,15 +196,15 @@ const OverviewPage = (props) => {
         patternInfoModalOpen={patternInfoModalOpen}
         onClosePatternInfoModal={() => setPatternInfoModalOpen(false)}
       />
-      <MovingAverageInfo 
+      <MovingAverageInfo
         movingAverageInfoOpen={movingAverageInfoShown}
         onClosemovingAverageInfo={() => setMovingAverageInfoShown(false)}
       />
-      <ObvInfoDialog 
+      <ObvInfoDialog
         obvInfoDialogOpen={obvInfoShown}
         onCloseObvInfoDialog={() => setObvInfoShown(false)}
       />
-      <TrendlineInfoDialog 
+      <TrendlineInfoDialog
         trendlineInfoDialogOpen={trendlineInfoShown}
         onCloseTrendlineInfoDialog={() => setTrendlineInfoShown(false)}
       />

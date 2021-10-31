@@ -1,10 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Drawer, makeStyles, Button, Typography, Grid, AppBar, Toolbar, 
-  FormControl, Chip, MenuItem, InputLabel, Select} from "@material-ui/core";
+import {
+  Drawer,
+  makeStyles,
+  Button,
+  Typography,
+  Grid,
+  AppBar,
+  Toolbar,
+  FormControl,
+  Chip,
+  MenuItem,
+  InputLabel,
+  Select,
+} from "@material-ui/core";
 import { Checkbox, FormGroup, FormControlLabel } from "@mui/material";
 import OverviewPage from "./components/overview";
-import GeneralAnalysisPage from "./components/generalAnalysis"
-import { AppContext } from './context/AppContext';
+import GeneralAnalysisPage from "./components/generalAnalysis";
+import { AppContext } from "./context/AppContext";
 
 const drawerWidth = 200;
 
@@ -46,10 +58,19 @@ function App() {
   const [days, setDays] = useState(7);
   const [status, setStatus] = useState([{}]);
   const [random, setRandom] = useState(Math.random());
-  const { setCoinList, coinList, setCoinManagerOpen, coinManagerOpen, offline, setOffline } = useContext(AppContext)
+  const {
+    setCoinList,
+    coinList,
+    setCoinManagerOpen,
+    coinManagerOpen,
+    offline,
+    setOffline,
+    setChartList,
+    setCompareChartList,
+  } = useContext(AppContext);
 
   // represents if the API is online or not
-  const live = (status.gecko_says === '(V3) To the Moon!'? true : false)
+  const live = status.gecko_says === "(V3) To the Moon!" ? true : false;
 
   // Repsponsible for rendering
   useEffect(() => {
@@ -67,7 +88,7 @@ function App() {
 
   // Repsponsible for rerendering
   const reRender = () => {
-    const trigger = true
+    const trigger = true;
     reFetch();
     setRandom(Math.random());
     return trigger;
@@ -77,15 +98,25 @@ function App() {
   const explainCoinSelection = () => {
     return (
       <>
-      <Typography variant="h3" gutterBottom>
-        Welkom to CryptoTool!
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        <p>Start by selecting some cryptocoins in the sidebar.</p>
-      </Typography>
+        <Typography variant="h3" gutterBottom>
+          Welkom to CryptoTool!
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          <p>Start by selecting some cryptocoins in the sidebar.</p>
+        </Typography>
       </>
     );
-  }
+  };
+
+  // Function to remove the coins from the tool
+  function onRemoveCoin() {
+    //set List to empty array
+    setCoinList([]);
+
+    // Remove all references to charts of the coins
+    setChartList([]);
+    setCompareChartList([]);
+  };
 
   return (
     <div className={classes.root}>
@@ -119,7 +150,7 @@ function App() {
                 onClick={() => {
                   coinList.length < 2 && setCoinManagerOpen(true);
                 }}
-                //disabled={coinList.length >= 2}
+                disabled={coinList.length >= 2}
                 variant="contained"
               >
                 Select coins
@@ -127,6 +158,24 @@ function App() {
             </div>
           </Grid>
         </div>
+        <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="flex-end"
+        >
+          <div style={{ paddingBottom: 20}}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                onRemoveCoin();
+              }}
+              disabled={coinList.length === 0}
+            >
+              Remove coins
+            </Button>
+          </div>
+        </Grid>
         <Grid
           container
           direction="row"
