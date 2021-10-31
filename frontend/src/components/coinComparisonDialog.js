@@ -3,6 +3,7 @@ import { AppContext } from "./../context/AppContext";
 import CandlestickChart from "./candlestickChart";
 import VolumeChart from "./volumeChart";
 import ShapeChart from "./shapeChart";
+import ObvIndicatorChart from "./obvIndicatorChart";
 import {
   Button,
   Dialog,
@@ -37,7 +38,6 @@ const CoinComparisonDialog = ({
       var chart = charts[i];
       //check if there is no undefined chart
       if (!(typeof chart === "undefined")) {
-        
         if (!chart.options.axisX) chart.options.axisX = {};
         if (!chart.options.axisY) chart.options.axisY = {};
 
@@ -49,7 +49,7 @@ const CoinComparisonDialog = ({
             chart.options.axisY.viewportMaximum = null;
 
           chart.render();
-        } 
+        }
         // In the other cases, change the view to the same as the event
         else if (chart !== e.chart) {
           chart.options.axisX.viewportMinimum = e.axisX[0].viewportMinimum;
@@ -73,7 +73,7 @@ const CoinComparisonDialog = ({
         maxWidth={"md"}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Compare selected coins</DialogTitle>
+        <DialogTitle id="form-dialog-title">Compare selected coins: {coinList[0]} vs. {coinList[1]}</DialogTitle>
         <DialogContent>
           {type === "candlestick" && (
             <DialogContentText>
@@ -121,7 +121,32 @@ const CoinComparisonDialog = ({
           )}
           {type === "relative" && (
             <DialogContentText>
-              <ShapeChart index={0} name={coinList} data={ohlc} currency={currency}/>
+              <ShapeChart
+                index={0}
+                name={coinList}
+                data={ohlc}
+                currency={currency}
+              />
+            </DialogContentText>
+          )}
+          {type === "obv" && (
+            <DialogContentText>
+              {/* OBV plot of the first coin */}
+              <ObvIndicatorChart
+                index={0}
+                name={coinList[0]}
+                days={days}
+                currency={currency}
+                rangeChanged={syncHandler}
+              />
+              {/* OBV of the second coin */}
+              <ObvIndicatorChart
+                index={1}
+                name={coinList[1]}
+                days={days}
+                currency={currency}
+                rangeChanged={syncHandler}
+              />
             </DialogContentText>
           )}
         </DialogContent>

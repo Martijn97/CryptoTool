@@ -71,7 +71,6 @@ const GeneralAnalysisPage = (props) => {
     setTrendlineInfoShown,
     setChartList,
     chartList,
-    compareChartList,
     setCompareChartList,
   } = useContext(AppContext);
 
@@ -79,7 +78,7 @@ const GeneralAnalysisPage = (props) => {
   const classes = useStyles();
 
   // State used to force a re-render of the page
-  const [random, setRandom] = useState(Math.random());
+  const [, setRandom] = useState(Math.random());
   // State that contains the data received from the API
   const [ohlc, setOHLC] = useState([{}]);
   // State that keeps track if the analysis must be plotted in the candlestick
@@ -284,6 +283,9 @@ const GeneralAnalysisPage = (props) => {
                               Candlestick
                             </MenuItem>
                             <MenuItem value={"volume"}>Volume</MenuItem>
+                            <MenuItem value={"obv"}>
+                              On-balanced Volume Indicator
+                            </MenuItem>
                           </Select>
                         </FormControl>
                       </div>
