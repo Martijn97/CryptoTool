@@ -130,8 +130,8 @@ const OverviewPage = (props) => {
                     {currency === "Euro"
                       ? "€ " + result[0]
                       : currency === "USD"
-                      ? "$ " + result[1]
-                      : "£ " + result[2]}
+                      ? "$ " + result[2]
+                      : "£ " + result[1]}
                   </Typography>
                   <Button
                     variant="contained"
