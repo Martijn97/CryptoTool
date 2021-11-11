@@ -2,7 +2,7 @@
 
 Tool to visualize and investigate crypto currencies. It uses the CoinGecko API to receive its data. The tool is made as part of a visualization master course at the Technical University of Eindhoven.
 
-<img width="1792" alt="Screenshot 2021-10-24 at 19 23 00" src="https://user-images.githubusercontent.com/17745256/138605558-12da4b6d-2472-4403-8320-56338ea121f4.png">
+<img width="1792" alt="Screenshot 2021-11-11 at 16 23 34" src="https://user-images.githubusercontent.com/17745256/141323731-b79cf55c-3608-4a58-97ad-90e080fe35cb.png">
 
 The tool lets the user select one or two cryptocoins from a treemap. The treemap is based on the market cap of the coins. The colour shows if the price has increased or decreased in the last 24 hours.
 
